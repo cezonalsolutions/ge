@@ -1,854 +1,3277 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 
+
+
 <meta
+
   name="viewport"
+
   content="width=device-width,initial-scale=1.0,viewport-fit=cover"
+
 >
+
+
 
 <title>CEZOO Vendor</title>
 
+
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
 
 <style>
 
+
+
 *{
+
   margin:0;
+
   padding:0;
+
   box-sizing:border-box;
+
 }
+
+
 
 html,
-body{
-  width:100%;
-  min-height:100%;
-}
 
 body{
-  min-height:100dvh;
-  font-family:Arial,sans-serif;
-  background:#fff;
+
+  width:100%;
+
+  min-height:100%;
+
 }
+
+
+
+body{
+
+  min-height:100dvh;
+
+  font-family:Arial,sans-serif;
+
+  background:#fff;
+
+}
+
+
+
 
 
 /* =========================
+
    LOGIN PAGE
+
 ========================= */
 
+
+
 .loginPage{
+
   width:100%;
+
   min-height:100dvh;
+
   background:#fff;
+
 }
+
+
+
 
 
 /* TOP IMAGE */
 
+
+
 .loginTop{
+
   width:100%;
+
   height:48dvh;
+
   min-height:350px;
 
+
+
   background:#eef4fb;
+
+
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+
+
+  overflow:hidden;
+
+
+
+  padding:15px 8px 0;
+
+
+
+  transition:.25s ease;
+
+}
+
+
+
+.loginTop img{
+
+  width:115%;
+
+  max-width:430px;
+
+
+
+  height:115%;
+
+  max-height:430px;
+
+
+
+  object-fit:contain;
+
+  display:block;
+
+
+
+  transform:translateY(35px);
+
+}
+
+
+
+
+
+/* LOGIN AREA */
+
+
+
+.loginBottom{
+
+  position:relative;
+
+
+
+  width:100%;
+
+  min-height:52dvh;
+
+
+
+  margin-top:-28px;
+
+
+
+  padding:
+
+    48px
+
+    30px
+
+    calc(35px + env(safe-area-inset-bottom));
+
+
+
+  background:#fff;
+
+
+
+  border-radius:32px 32px 0 0;
+
+
+
+  z-index:2;
+
+
+
+  transition:.25s ease;
+
+}
+
+
+
+
+
+/* TITLE */
+
+
+
+.loginTitle{
+
+  margin:0 0 30px;
+
+
+
+  text-align:center;
+
+
+
+  color:#685cff;
+
+
+
+  font-size:32px;
+
+  font-weight:900;
+
+}
+
+
+
+
+
+/* INPUT */
+
+
+
+.loginInput{
+
+  display:block;
+
+
+
+  width:100%;
+
+  height:55px;
+
+
+
+  margin-bottom:15px;
+
+
+
+  padding:0 20px;
+
+
+
+  border:2px solid #e4e9f1;
+
+  border-radius:25px;
+
+
+
+  background:#fff;
+
+
+
+  color:#222;
+
+
+
+  font-size:15px;
+
+
+
+  outline:none;
+
+
+
+  -webkit-appearance:none;
+
+  appearance:none;
+
+}
+
+
+
+.loginInput::placeholder{
+
+  color:#777;
+
+}
+
+
+
+.loginInput:focus{
+
+  border-color:#685cff;
+
+
+
+  box-shadow:
+
+    0 0 0 3px
+
+    rgba(104,92,255,.08);
+
+}
+
+
+
+
+
+/* BUTTON */
+
+
+
+.loginButton{
+
+  width:100%;
+
+  height:54px;
+
+
+
+  margin-top:2px;
+
+
+
+  border:0;
+
+  border-radius:25px;
+
+
+
+  background:
+
+    linear-gradient(
+
+      90deg,
+
+      #675cff,
+
+      #7163ff
+
+    );
+
+
+
+  color:#fff;
+
+
+
+  font-size:16px;
+
+  font-weight:700;
+
+
+
+  cursor:pointer;
+
+
+
+  box-shadow:
+
+    0 7px 18px
+
+    rgba(103,92,255,.20);
+
+}
+
+
+
+.loginButton:active{
+
+  transform:scale(.97);
+
+}
+
+
+
+.loginButton:disabled{
+
+  opacity:.6;
+
+}
+
+
+
+
+
+/* ERROR */
+
+
+
+.loginMessage{
+
+  display:none;
+
+
+
+  margin-top:14px;
+
+
+
+  text-align:center;
+
+
+
+  color:#e54848;
+
+
+
+  font-size:13px;
+
+  font-weight:600;
+
+}
+
+
+
+.loginMessage.error{
+
+  display:block;
+
+}
+
+
+
+
+
+/* =========================
+
+   KEYBOARD OPEN
+
+========================= */
+
+
+
+body.keyboard-open .loginTop{
+
+  height:0;
+
+  min-height:0;
+
+
+
+  padding:0;
+
+
+
+  opacity:0;
+
+
+
+  pointer-events:none;
+
+}
+
+
+
+body.keyboard-open .loginTop img{
+
+  display:none;
+
+}
+
+/* =========================
+
+   KEYBOARD OPEN — HALF MOVE ONLY
+
+========================= */
+
+
+
+body.keyboard-open .loginTop{
+
+  height:24dvh;
+
+  min-height:170px;
+
+
+
+  padding:0 8px;
+
+
+
+  opacity:1;
+
+
+
+  pointer-events:none;
+
+
+
+  overflow:hidden;
+
+}
+
+
+
+
+
+/* image half paiki slide */
+
+body.keyboard-open .loginTop img{
+
+  display:block;
+
+
+
+  width:105%;
+
+  height:280px;
+
+
+
+  object-fit:contain;
+
+
+
+  transform:translateY(-55px);
+
+}
+
+
+
+
+
+/* login sheet konchem matrame paiki */
+
+body.keyboard-open .loginBottom{
+
+  min-height:auto;
+
+
+
+  margin-top:-25px;
+
+
+
+  padding-top:30px;
+
+
+
+  border-radius:32px 32px 0 0;
+
+}
+
+
+
+
+
+body.keyboard-open .loginTitle{
+
+  margin-bottom:22px;
+
+}
+
+
+
+
+
+/* =========================
+
+   MAIN UI
+
+========================= */
+
+
+
+
+
+
+
+/* SMALL MOBILE */
+
+
+
+@media(max-width:380px){
+
+
+
+  .loginTop{
+
+    height:46dvh;
+
+    min-height:320px;
+
+  }
+
+
+
+  .loginTop img{
+
+    width:120%;
+
+    height:120%;
+
+
+
+    transform:translateY(32px);
+
+  }
+
+
+
+  .loginBottom{
+
+    padding-left:24px;
+
+    padding-right:24px;
+
+  }
+
+
+
+}
+
+/* =====================================
+
+   MAIN UI
+
+===================================== */
+
+
+
+#mainUI{
+
+  display:none;
+
+
+
+  width:100%;
+
+  min-height:100dvh;
+
+
+
+  background:#fff;
+
+
+
+  padding-bottom:
+
+    calc(105px + env(safe-area-inset-bottom));
+
+}
+
+
+
+
+
+.vendorMainContent{
+
+  width:100%;
+
+  min-height:100dvh;
+
+}
+
+
+
+
+
+.vendorPage{
+
+  display:none;
+
+
+
+  width:100%;
+
+  min-height:
+
+    calc(100dvh - 100px);
+
+}
+
+
+
+
+
+.vendorPage.active{
+
+  display:block;
+
+}
+
+
+
+
+
+
+
+/* =====================================
+
+   PROFILE PAGE
+
+===================================== */
+
+
+
+.profilePage{
+
+  padding:
+
+    calc(35px + env(safe-area-inset-top))
+
+    25px
+
+    35px;
+
+
+
+  background:#fff;
+
+}
+
+
+
+
+
+
+
+/* PROFILE TOP */
+
+
+
+.profileTop{
+
+  display:flex;
+
+  align-items:center;
+
+
+
+  gap:14px;
+
+
+
+  padding:
+
+    10px 3px 18px;
+
+}
+
+
+
+
+
+
+
+/* AVATAR */
+
+
+
+.profileAvatar{
+  width:76px;
+  height:76px;
+  flex:0 0 76px;
+  border-radius:50%;
+  overflow:hidden;
+  background:#f2f2f2;
+}
+
+.profileAvatar img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+}
+
+
+
+
+
+.profileTopInfo{
+
+  flex:1;
+
+  min-width:0;
+
+}
+
+
+
+
+
+.profileTopInfo h2{
+
+  margin:0 0 7px;
+
+
+
+  color:#111;
+
+
+
+  font-size:18px;
+
+  font-weight:800;
+
+
+
+  white-space:nowrap;
+
+  overflow:hidden;
+
+  text-overflow:ellipsis;
+
+}
+
+
+
+
+
+.profileTopInfo p{
+
+  margin:0 0 10px;
+
+
+
+  color:#444;
+
+
+
+  font-size:14px;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =====================================
+
+   PROFILE DETAILS
+
+===================================== */
+
+
+
+.profileMenu{
+
+  width:100%;
+
+
+
+  border-top:1px solid #ededed;
+
+  border-bottom:1px solid #ededed;
+
+}
+
+
+
+
+
+.profileMenuItem{
+
+  min-height:56px;
+
+
+
+  display:flex;
+
+  align-items:center;
+
+
+
+  gap:12px;
+
+
+
+  padding:7px 3px;
+
+
+
+  border-bottom:1px solid #f0f0f0;
+
+}
+
+
+
+
+
+.profileMenuItem:last-child{
+
+  border-bottom:0;
+
+}
+
+
+
+
+
+
+
+/* ICON */
+
+
+
+.profileMenuIcon{
+
+  width:27px;
+
+
+
+  flex:0 0 27px;
+
+
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+
+
+  color:#171717;
+
+}
+
+
+
+
+
+.profileMenuIcon svg{
+
+  width:22px;
+
+  height:22px;
+
+
+
+  fill:none;
+
+
+
+  stroke:currentColor;
+
+  stroke-width:1.8;
+
+
+
+  stroke-linecap:round;
+
+  stroke-linejoin:round;
+
+}
+
+
+
+
+
+
+
+/* CONTENT */
+
+
+
+.profileMenuContent{
+
+  flex:1;
+
+  min-width:0;
+
+}
+
+
+
+
+
+.profileMenuContent span{
+
+  display:block;
+
+
+
+  margin-bottom:5px;
+
+
+
+  color:#999;
+
+
+
+  font-size:11px;
+
+  font-weight:500;
+
+}
+
+
+
+
+
+.profileMenuContent strong{
+
+  display:block;
+
+
+
+  color:#171717;
+
+
+
+  font-size:15px;
+
+  font-weight:600;
+
+
+
+  overflow:hidden;
+
+  text-overflow:ellipsis;
+
+  white-space:nowrap;
+
+}
+
+
+
+
+
+
+
+/* =====================================
+
+   LOGOUT
+
+===================================== */
+
+
+
+.profileLogout{
+
+  width:100%;
+
+  height:52px;
+
+
+
+  margin-top:7px;
+
+
+
+  padding:0 3px;
+
+
+
+  border:0;
+
+  background:transparent;
+
+
+
+  display:flex;
+
+  align-items:center;
+
+
+
+  gap:17px;
+
+
+
+  color:#e53935;
+
+
+
+  font-size:15px;
+
+  font-weight:600;
+
+
+
+  cursor:pointer;
+
+}
+
+
+
+
+
+.logoutIcon{
+
+  width:27px;
+
+
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+}
+
+
+
+
+
+.logoutIcon svg{
+
+  width:22px;
+
+  height:22px;
+
+
+
+  fill:none;
+
+
+
+  stroke:currentColor;
+
+  stroke-width:1.9;
+
+
+
+  stroke-linecap:round;
+
+  stroke-linejoin:round;
+
+}
+
+
+
+
+
+.profileArrow{
+
+  margin-left:auto;
+
+
+
+  color:#999;
+
+
+
+  font-size:25px;
+
+  font-weight:300;
+
+}
+
+
+
+
+
+
+
+/* =====================================
+
+   FLOATING BOTTOM NAV
+
+===================================== */
+
+
+
+.floatingVendorNav{
+
+  position:fixed;
+
+
+
+  left:16px;
+
+  right:16px;
+
+
+
+  bottom:
+
+    calc(13px + env(safe-area-inset-bottom));
+
+
+
+  height:72px;
+
+
+
+  padding:7px;
+
+
+
+  display:flex;
+
+  align-items:center;
+
+
+
+  background:
+
+    rgba(255,255,255,.96);
+
+
+
+  border:
+
+    1px solid #ececf2;
+
+
+
+  border-radius:25px;
+
+
+
+  box-shadow:
+
+    0 10px 32px
+
+    rgba(20,22,35,.13);
+
+
+
+  backdrop-filter:blur(18px);
+
+  -webkit-backdrop-filter:blur(18px);
+
+
+
+  z-index:999;
+
+}
+
+
+
+
+
+
+
+/* NAV BUTTON */
+
+
+
+.vendorNavItem{
+
+  flex:1;
+
+
+
+  height:57px;
+
+
+
+  border:0;
+
+  border-radius:18px;
+
+
+
+  background:transparent;
+
+
+
+  display:flex;
+
+  flex-direction:column;
+
+  align-items:center;
+
+  justify-content:center;
+
+
+
+  gap:4px;
+
+
+
+  color:#999ca6;
+
+
+
+  cursor:pointer;
+
+
+
+  transition:.18s ease;
+
+}
+
+
+
+
+
+.vendorNavItem svg{
+
+  width:22px;
+
+  height:22px;
+
+
+
+  fill:none;
+
+
+
+  stroke:currentColor;
+
+  stroke-width:1.9;
+
+
+
+  stroke-linecap:round;
+
+  stroke-linejoin:round;
+
+}
+
+
+
+
+
+.vendorNavItem span{
+
+  font-size:10px;
+
+  font-weight:700;
+
+}
+
+
+
+
+
+
+
+/* ACTIVE */
+
+
+
+.vendorNavItem.active{
+
+  background:#f0efff;
+
+
+
+  color:#685cff;
+
+}
+
+
+
+
+
+.vendorNavItem:active{
+
+  transform:scale(.94);
+
+}
+
+
+
+
+
+
+
+/* =====================================
+
+   SMALL MOBILE
+
+===================================== */
+
+
+
+@media(max-width:380px){
+
+
+
+  .profilePage{
+
+    padding-left:20px;
+
+    padding-right:20px;
+
+  }
+
+
+
+
+
+  .profileAvatar{
+    width:70px;
+    height:70px;
+    flex-basis:70px;
+  }
+
+
+
+
+
+  .profileTop{
+
+    gap:17px;
+
+  }
+
+
+
+
+
+  .profileTopInfo h2{
+
+    font-size:18px;
+
+  }
+
+
+
+
+
+  
+
+
+
+}
+
+
+/* =====================================
+   APP PRELOAD / SESSION RESTORE
+===================================== */
+
+#appPreloader{
+  position:fixed;
+  inset:0;
+  z-index:99999;
 
   display:flex;
   align-items:center;
   justify-content:center;
 
-  overflow:hidden;
-
-  padding:15px 8px 0;
-
-  transition:.25s ease;
-}
-
-.loginTop img{
-  width:115%;
-  max-width:430px;
-
-  height:115%;
-  max-height:430px;
-
-  object-fit:contain;
-  display:block;
-
-  transform:translateY(35px);
-}
-
-
-/* LOGIN AREA */
-
-.loginBottom{
-  position:relative;
-
-  width:100%;
-  min-height:52dvh;
-
-  margin-top:-28px;
-
-  padding:
-    48px
-    30px
-    calc(35px + env(safe-area-inset-bottom));
-
   background:#fff;
 
-  border-radius:32px 32px 0 0;
+  transition:opacity .22s ease, visibility .22s ease;
+}
 
-  z-index:2;
+#appPreloader.hide{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
 
-  transition:.25s ease;
+.appPreloadSpinner{
+  width:34px;
+  height:34px;
+
+  border:3px solid #ecebff;
+  border-top-color:#685cff;
+  border-radius:50%;
+
+  animation:cezooPreloadSpin .72s linear infinite;
+}
+
+@keyframes cezooPreloadSpin{
+  to{ transform:rotate(360deg); }
 }
 
 
-/* TITLE */
-
-.loginTitle{
-  margin:0 0 30px;
-
+/* PROFILE PRODUCT STATS */
+.profileStats{
+  width:100%;
+  margin:4px 0 14px;
+  padding:14px 8px;
+  display:flex;
+  align-items:center;
+  background:#f8f8fb;
+  border-radius:16px;
+}
+.profileStatBox{
+  flex:1;
   text-align:center;
-
-  color:#685cff;
-
-  font-size:32px;
-  font-weight:900;
 }
-
-
-/* INPUT */
-
-.loginInput{
+.profileStatBox span{
   display:block;
-
-  width:100%;
-  height:55px;
-
-  margin-bottom:15px;
-
-  padding:0 20px;
-
-  border:2px solid #e4e9f1;
-  border-radius:25px;
-
-  background:#fff;
-
-  color:#222;
-
-  font-size:15px;
-
-  outline:none;
-
-  -webkit-appearance:none;
-  appearance:none;
-}
-
-.loginInput::placeholder{
-  color:#777;
-}
-
-.loginInput:focus{
-  border-color:#685cff;
-
-  box-shadow:
-    0 0 0 3px
-    rgba(104,92,255,.08);
-}
-
-
-/* BUTTON */
-
-.loginButton{
-  width:100%;
-  height:54px;
-
-  margin-top:2px;
-
-  border:0;
-  border-radius:25px;
-
-  background:
-    linear-gradient(
-      90deg,
-      #675cff,
-      #7163ff
-    );
-
-  color:#fff;
-
-  font-size:16px;
-  font-weight:700;
-
-  cursor:pointer;
-
-  box-shadow:
-    0 7px 18px
-    rgba(103,92,255,.20);
-}
-
-.loginButton:active{
-  transform:scale(.97);
-}
-
-.loginButton:disabled{
-  opacity:.6;
-}
-
-
-/* ERROR */
-
-.loginMessage{
-  display:none;
-
-  margin-top:14px;
-
-  text-align:center;
-
-  color:#e54848;
-
-  font-size:13px;
+  margin-bottom:5px;
+  color:#8d8d95;
+  font-size:11px;
   font-weight:600;
 }
-
-.loginMessage.error{
+.profileStatBox strong{
   display:block;
-}
-
-
-/* =========================
-   KEYBOARD OPEN
-========================= */
-
-body.keyboard-open .loginTop{
-  height:0;
-  min-height:0;
-
-  padding:0;
-
-  opacity:0;
-
-  pointer-events:none;
-}
-
-body.keyboard-open .loginTop img{
-  display:none;
-}
-/* =========================
-   KEYBOARD OPEN — HALF MOVE ONLY
-========================= */
-
-body.keyboard-open .loginTop{
-  height:24dvh;
-  min-height:170px;
-
-  padding:0 8px;
-
-  opacity:1;
-
-  pointer-events:none;
-
-  overflow:hidden;
-}
-
-
-/* image half paiki slide */
-body.keyboard-open .loginTop img{
-  display:block;
-
-  width:105%;
-  height:280px;
-
-  object-fit:contain;
-
-  transform:translateY(-55px);
-}
-
-
-/* login sheet konchem matrame paiki */
-body.keyboard-open .loginBottom{
-  min-height:auto;
-
-  margin-top:-25px;
-
-  padding-top:30px;
-
-  border-radius:32px 32px 0 0;
-}
-
-
-body.keyboard-open .loginTitle{
-  margin-bottom:22px;
-}
-
-
-/* =========================
-   MAIN UI
-========================= */
-
-#mainUI{
-  display:none;
-
-  width:100%;
-  min-height:100dvh;
-
-  background:#fff;
-
-  padding:
-    calc(30px + env(safe-area-inset-top))
-    22px
-    30px;
-}
-
-
-/* FOR NOW VENDOR NAME ONLY */
-
-.vendorWelcome{
-  font-size:14px;
-  color:#777;
-  margin-bottom:5px;
-}
-
-.vendorName{
-  font-size:28px;
-  font-weight:900;
   color:#171717;
+  font-size:20px;
+  font-weight:800;
 }
-
-
-/* SMALL MOBILE */
-
-@media(max-width:380px){
-
-  .loginTop{
-    height:46dvh;
-    min-height:320px;
-  }
-
-  .loginTop img{
-    width:120%;
-    height:120%;
-
-    transform:translateY(32px);
-  }
-
-  .loginBottom{
-    padding-left:24px;
-    padding-right:24px;
-  }
-
+.profileStatDivider{
+  width:1px;
+  height:32px;
+  background:#e5e5ea;
 }
 
 </style>
+
 </head>
+
+
+
 
 
 <body>
 
+<!-- APP PRELOADER -->
+<div id="appPreloader" aria-label="Loading">
+  <div class="appPreloadSpinner"></div>
+</div>
+
+
+
+
+
 
 <!-- =============================
+
      LOGIN SCREEN
+
 ============================= -->
 
+
+
 <div
+
   class="loginPage"
+
   id="loginPage"
+
 >
+
+
+
 
 
   <div class="loginTop">
 
+
+
     <img
+
       src="vendor.webp"
+
       alt="Vendor"
+
     >
+
+
 
   </div>
 
 
+
+
+
   <div class="loginBottom">
 
+
+
     <h1 class="loginTitle">
+
       Login
+
     </h1>
+
+
+
 
 
     <form id="loginForm">
 
 
+
+
+
       <input
+
         class="loginInput"
+
         id="mobile"
+
         type="tel"
+
         inputmode="numeric"
+
         maxlength="10"
+
         placeholder="Mobile Number"
+
         autocomplete="username"
+
       >
+
+
+
 
 
       <input
+
         class="loginInput"
+
         id="password"
+
         type="password"
+
         placeholder="Password"
+
         autocomplete="current-password"
+
       >
+
+
+
 
 
       <button
+
         class="loginButton"
+
         id="loginBtn"
+
         type="submit"
+
       >
+
         Sign In
+
       </button>
 
 
+
+
+
       <div
+
         class="loginMessage"
+
         id="message"
+
       ></div>
+
+
+
 
 
     </form>
 
+
+
   </div>
 
+
+
 </div>
+
+
+
+
 
 
 
 <!-- =============================
+
      MAIN UI
+
 ============================= -->
+
+
+
+<!-- =========================
+
+     MAIN UI
+
+========================= -->
+
+
 
 <div id="mainUI">
 
-  <div class="vendorWelcome">
-    Welcome
-  </div>
 
-  <div
-    class="vendorName"
-    id="vendorName"
-  >
-    Vendor
-  </div>
+
+  <main class="vendorMainContent">
+
+
+
+    <!-- =====================
+
+         ORDERS
+
+    ====================== -->
+
+
+
+    <section
+
+      class="vendorPage active"
+
+      id="ordersPage"
+
+    >
+
+      <!-- Present blank -->
+
+    </section>
+
+
+
+
+
+    <!-- =====================
+
+         STATUS
+
+    ====================== -->
+
+
+
+    <section
+
+      class="vendorPage"
+
+      id="statusPage"
+
+    >
+
+      <!-- Present blank -->
+
+    </section>
+
+
+
+
+
+    <!-- =====================
+
+         PRODUCTS
+
+    ====================== -->
+
+
+
+    <section
+
+      class="vendorPage"
+
+      id="productsPage"
+
+    >
+
+      <!-- Present blank -->
+
+    </section>
+
+
+
+
+
+    <!-- =====================
+
+         PROFILE
+
+    ====================== -->
+
+
+
+    <section
+
+      class="vendorPage profilePage"
+
+      id="profilePage"
+
+    >
+
+
+
+
+
+      <!-- PROFILE TOP -->
+
+
+
+      <div class="profileTop">
+
+
+
+        <div class="profileAvatar"><img src="male.png" alt="Vendor Profile"></div>
+
+
+
+
+
+        <div class="profileTopInfo">
+
+
+
+          <h2 id="profileVendorName">
+
+            Vendor
+
+          </h2>
+
+
+
+          <p id="profileVendorMobile">
+
+            —
+
+          </p>
+
+
+
+        </div>
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <!-- =====================
+
+           DETAILS
+
+      ====================== -->
+
+
+
+      <div class="profileStats">
+        <div class="profileStatBox">
+          <span>Total Products</span>
+          <strong id="profileTotalProducts">0</strong>
+        </div>
+
+        <div class="profileStatDivider"></div>
+
+        <div class="profileStatBox">
+          <span>Total Out of Stock</span>
+          <strong id="profileOutOfStock">0</strong>
+        </div>
+      </div>
+
+      <div class="profileMenu">
+
+
+
+
+
+        <div class="profileMenuItem">
+
+
+
+          <div class="profileMenuIcon">
+
+
+
+            <svg viewBox="0 0 24 24">
+
+              <circle cx="12" cy="8" r="4"/>
+
+              <path d="M5 21c.5-4 3-6 7-6s6.5 2 7 6"/>
+
+            </svg>
+
+
+
+          </div>
+
+
+
+
+
+          <div class="profileMenuContent">
+
+
+
+            <span>
+
+              Vendor Name
+
+            </span>
+
+
+
+            <strong id="profileName">
+
+              —
+
+            </strong>
+
+
+
+          </div>
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <div class="profileMenuItem">
+
+
+
+          <div class="profileMenuIcon">
+
+
+
+            <svg viewBox="0 0 24 24">
+
+              <rect
+
+                x="7"
+
+                y="2"
+
+                width="10"
+
+                height="20"
+
+                rx="2"
+
+              />
+
+
+
+              <path d="M10 18h4"/>
+
+
+
+            </svg>
+
+
+
+          </div>
+
+
+
+
+
+          <div class="profileMenuContent">
+
+
+
+            <span>
+
+              Mobile Number
+
+            </span>
+
+
+
+            <strong id="profileMobile">
+
+              —
+
+            </strong>
+
+
+
+          </div>
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <div class="profileMenuItem">
+
+
+
+          <div class="profileMenuIcon">
+
+
+
+            <svg viewBox="0 0 24 24">
+
+
+
+              <path
+
+                d="M12 21s6-5.1 6-11a6 6 0 1 0-12 0c0 5.9 6 11 6 11z"
+
+              />
+
+
+
+              <circle
+
+                cx="12"
+
+                cy="10"
+
+                r="2"
+
+              />
+
+
+
+            </svg>
+
+
+
+          </div>
+
+
+
+
+
+          <div class="profileMenuContent">
+
+
+
+            <span>
+
+              Location
+
+            </span>
+
+
+
+            <strong id="profileLocation">
+
+              —
+
+            </strong>
+
+
+
+          </div>
+
+
+
+        </div>
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <!-- =====================
+
+           LOGOUT
+
+      ====================== -->
+
+
+
+      <button
+
+        class="profileLogout"
+
+        id="logoutButton"
+
+        type="button"
+
+      >
+
+
+
+        <span class="logoutIcon">
+
+
+
+          <svg viewBox="0 0 24 24">
+
+
+
+            <path
+
+              d="M10 5H5v14h5"
+
+            />
+
+
+
+            <path
+
+              d="M13 8l4 4-4 4"
+
+            />
+
+
+
+            <path
+
+              d="M17 12H9"
+
+            />
+
+
+
+          </svg>
+
+
+
+        </span>
+
+
+
+        <span>
+
+          Log Out
+
+        </span>
+
+
+
+        <span class="profileArrow">
+
+          ›
+
+        </span>
+
+
+
+      </button>
+
+
+
+
+
+    </section>
+
+
+
+  </main>
+
+
+
+
+
+
+
+  <!-- =========================
+
+       FLOATING BOTTOM NAV
+
+  ========================== -->
+
+
+
+  <nav class="floatingVendorNav">
+
+
+
+
+
+    <!-- ORDERS -->
+
+
+
+    <button
+
+      class="vendorNavItem active"
+
+      data-page="ordersPage"
+
+      type="button"
+
+    >
+
+
+
+      <svg viewBox="0 0 24 24">
+
+        <path d="M5 4h14v16H5z"/>
+
+        <path d="M8 9h8M8 13h8M8 17h5"/>
+
+      </svg>
+
+
+
+      <span>
+
+        Orders
+
+      </span>
+
+
+
+    </button>
+
+
+
+
+
+
+
+    <!-- STATUS -->
+
+
+
+    <button
+
+      class="vendorNavItem"
+
+      data-page="statusPage"
+
+      type="button"
+
+    >
+
+
+
+      <svg viewBox="0 0 24 24">
+
+        <circle cx="12" cy="12" r="8"/>
+
+        <path d="M8 12l3 3 5-6"/>
+
+      </svg>
+
+
+
+      <span>
+
+        Status
+
+      </span>
+
+
+
+    </button>
+
+
+
+
+
+
+
+    <!-- PRODUCTS -->
+
+
+
+    <button
+
+      class="vendorNavItem"
+
+      data-page="productsPage"
+
+      type="button"
+
+    >
+
+
+
+      <svg viewBox="0 0 24 24">
+
+        <path d="M5 7h14l-1 13H6L5 7z"/>
+
+        <path d="M9 7a3 3 0 0 1 6 0"/>
+
+      </svg>
+
+
+
+      <span>
+
+        Products
+
+      </span>
+
+
+
+    </button>
+
+
+
+
+
+
+
+    <!-- PROFILE -->
+
+
+
+    <button
+
+      class="vendorNavItem"
+
+      data-page="profilePage"
+
+      type="button"
+
+    >
+
+
+
+      <svg viewBox="0 0 24 24">
+
+        <circle cx="12" cy="8" r="4"/>
+
+        <path d="M5 21c.5-4 3-6 7-6s6.5 2 7 6"/>
+
+      </svg>
+
+
+
+      <span>
+
+        Profile
+
+      </span>
+
+
+
+    </button>
+
+
+
+
+
+  </nav>
+
+
 
 </div>
+
+
+
+
 
 
 
 <script>
 
+
+
 /* =============================
+
    SUPABASE
+
 ============================= */
 
+
+
 const SUPABASE_URL =
+
 "https://ycqwdeiykbkfmmlpgdzd.supabase.co";
 
 
+
+
+
 const SUPABASE_KEY =
+
 "sb_publishable_-4RzQVudUy_VsvSpHTxNfg_hrdsQW0j";
 
 
+
+
+
 const sb =
+
 window.supabase.createClient(
+
   SUPABASE_URL,
+
   SUPABASE_KEY
+
 );
+
+
+
+
 
 
 
 /* =============================
+
    ELEMENTS
+
 ============================= */
 
+
+
 const loginPage =
+
 document.getElementById(
+
   "loginPage"
+
 );
+
+
+
 
 
 const mainUI =
+
 document.getElementById(
+
   "mainUI"
+
 );
+
+
+
 
 
 const loginForm =
+
 document.getElementById(
+
   "loginForm"
+
 );
+
+
+
 
 
 const mobile =
+
 document.getElementById(
+
   "mobile"
+
 );
+
+
+
 
 
 const password =
+
 document.getElementById(
+
   "password"
+
 );
+
+
+
 
 
 const loginBtn =
+
 document.getElementById(
+
   "loginBtn"
+
 );
+
+
+
 
 
 const message =
+
 document.getElementById(
+
   "message"
+
 );
-
-
-const vendorName =
-document.getElementById(
-  "vendorName"
-);
-
-
 let currentVendor = null;
 
 
 
+
+
+
+
 /* =============================
+
    NUMBERS ONLY
+
 ============================= */
 
+
+
 mobile.addEventListener(
+
 "input",
+
 function(){
 
+
+
   this.value =
+
     this.value
+
       .replace(/\D/g,"")
+
       .slice(0,10);
+
+
 
 });
 
 
 
+
+
+
+
 /* =============================
+
    KEYBOARD
+
 ============================= */
+
+
 
 (function(){
 
+
+
   let baseHeight =
+
     window.visualViewport
+
       ? window.visualViewport.height
+
       : window.innerHeight;
+
+
+
 
 
   function updateKeyboard(){
 
+
+
     if(!window.visualViewport){
+
       return;
+
     }
 
 
+
+
+
     const difference =
+
       baseHeight -
+
       window.visualViewport.height;
 
 
+
+
+
     document.body.classList.toggle(
+
       "keyboard-open",
+
       difference > 140
+
     );
 
+
+
   }
+
+
+
 
 
   if(window.visualViewport){
 
+
+
     window.visualViewport.addEventListener(
+
       "resize",
+
       updateKeyboard
+
     );
+
+
 
   }
 
 
+
+
+
   [mobile,password].forEach(input=>{
 
+
+
     input.addEventListener(
+
       "focus",
+
       ()=>setTimeout(
+
         updateKeyboard,
+
         100
+
       )
+
     );
 
 
+
+
+
     input.addEventListener(
+
       "blur",
+
       ()=>{
+
+
 
         setTimeout(()=>{
 
+
+
           if(
+
             document.activeElement !== mobile &&
+
             document.activeElement !== password
+
           ){
 
+
+
             document.body.classList.remove(
+
               "keyboard-open"
+
             );
+
+
 
           }
 
+
+
         },150);
 
+
+
       }
+
     );
 
+
+
   });
+
+
 
 })();
 
 
 
+
+
+
+
 /* =============================
+
    ERROR
+
 ============================= */
+
+
 
 function showError(text){
 
+
+
   message.textContent =
+
     text;
 
+
+
   message.className =
+
     "loginMessage error";
 
+
+
 }
+
+
+
 
 
 function clearError(){
 
+
+
   message.textContent =
+
     "";
 
+
+
   message.className =
+
     "loginMessage";
+
+
 
 }
 
 
 
+
+
+
+
 /* =============================
+
    OPEN MAIN UI
+
 ============================= */
+
+
+async function loadProfileProductStats(vendor){
+  const totalEl = document.getElementById("profileTotalProducts");
+  const outEl = document.getElementById("profileOutOfStock");
+  if(!totalEl || !outEl) return;
+
+  totalEl.textContent = "0";
+  outEl.textContent = "0";
+}
 
 function openMainUI(vendor){
 
-  currentVendor =
-    vendor;
 
 
-  /* VENDOR NAME */
+  currentVendor = vendor;
 
-  vendorName.textContent =
+
+
+
+
+  const name =
+
     vendor.vendor_name ||
+
     vendor.name ||
+
     "Vendor";
 
 
-  /* HIDE KEYBOARD MODE */
+
+
+
+  const phone =
+
+    vendor.mobile ||
+
+    "—";
+
+
+
+
+
+  const location =
+
+    vendor.location ||
+
+    vendor.vendor_location ||
+
+    vendor.address ||
+
+    "—";
+
+
+
+
+
+  /* PROFILE DATA */
+
+
+
+  document.getElementById(
+
+    "profileVendorName"
+
+  ).textContent = name;
+
+
+
+
+
+  document.getElementById(
+
+    "profileVendorMobile"
+
+  ).textContent = phone;
+
+
+
+
+
+  document.getElementById(
+
+    "profileName"
+
+  ).textContent = name;
+
+
+
+
+
+  document.getElementById(
+
+    "profileMobile"
+
+  ).textContent = phone;
+
+
+
+
+
+  document.getElementById(
+
+    "profileLocation"
+
+  ).textContent = location;
+
+  loadProfileProductStats(vendor);
+
+
+
+
+
+  /* LOGIN CLOSE */
+
+
 
   document.body.classList.remove(
+
     "keyboard-open"
+
   );
 
 
-  /* LOGIN HIDE */
+
+
 
   loginPage.style.display =
+
     "none";
 
 
-  /* MAIN UI OPEN */
+
+
+
+  /* MAIN OPEN */
+
+
 
   mainUI.style.display =
+
     "block";
+
+
+
+
+
+  /* FIRST PAGE = ORDERS */
+
+
+
+  openVendorPage(
+
+    "ordersPage"
+
+  );
+
+
 
 }
 
 
 
+
+
+
+
 /* =============================
+
    LOGIN
+
 ============================= */
 
+
+
 loginForm.addEventListener(
+
 "submit",
+
 async function(event){
 
+
+
   event.preventDefault();
+
+
+
 
 
   clearError();
 
 
+
+
+
   const phone =
+
     mobile.value
+
       .replace(/\D/g,"")
+
       .trim();
 
 
+
+
+
   const pass =
+
     password.value.trim();
+
+
+
+
 
 
 
   /* MOBILE */
 
+
+
   if(
+
     !/^[0-9]{10}$/.test(phone)
+
   ){
 
+
+
     showError(
+
       "Enter valid mobile number"
+
     );
+
+
 
     return;
 
+
+
   }
+
+
+
+
 
 
 
   /* PASSWORD */
 
+
+
   if(!pass){
 
+
+
     showError(
+
       "Enter password"
+
     );
 
+
+
     return;
+
+
 
   }
 
 
 
+
+
+
+
   loginBtn.disabled =
+
     true;
 
 
+
+
+
   loginBtn.textContent =
+
     "Signing in...";
+
+
+
 
 
   try{
 
 
+
+
+
     const {
+
       data,
+
       error
+
     } =
+
     await sb
+
       .from(
+
         "vendor_login"
+
       )
+
       .select("*")
+
       .eq(
+
         "mobile",
+
         phone
+
       )
+
       .eq(
+
         "password",
+
         pass
+
       )
+
       .maybeSingle();
+
+
+
+
 
 
 
     if(error){
 
+
+
       throw error;
 
+
+
     }
+
+
+
+
 
 
 
     if(!data){
 
+
+
       showError(
+
         "Wrong mobile number or password"
+
       );
 
+
+
       return;
+
+
 
     }
 
 
 
+
+
+
+
     /* =========================
+
        SUCCESS
+
     ========================= */
 
+
+
     currentVendor =
+
       data;
 
 
+
+
+
     localStorage.setItem(
+
       "cezoo_vendor_id",
+
       String(data.id)
+
     );
+
+
+
 
 
     /*
+
       NO REDIRECT.
 
+
+
       SAME HTML MAIN UI OPEN.
+
     */
 
+
+
     openMainUI(
+
       data
+
     );
+
+
+
 
 
   }catch(error){
 
 
+
+
+
     console.error(
+
       "Login error:",
+
       error
+
     );
+
+
+
 
 
     showError(
+
       "Unable to login. Please try again."
+
     );
+
+
+
 
 
   }finally{
 
 
+
+
+
     loginBtn.disabled =
+
       false;
 
 
+
+
+
     loginBtn.textContent =
+
       "Sign In";
 
 
+
+
+
   }
+
+
 
 });
 
 
 
+
+
+
+
 /* =============================
+
    RESTORE LOGIN
+
 ============================= */
+
+
+
+
+function hideAppPreloader(){
+
+  const loader =
+    document.getElementById("appPreloader");
+
+  if(!loader){
+    return;
+  }
+
+  loader.classList.add("hide");
+
+  setTimeout(()=>{
+    loader.remove();
+  },260);
+
+}
 
 async function restoreLogin(){
 
@@ -858,13 +3281,27 @@ async function restoreLogin(){
     );
 
 
+  /* No saved login -> show login only after preload */
   if(!id){
+
+    loginPage.style.display =
+      "block";
+
+    mainUI.style.display =
+      "none";
+
+    hideAppPreloader();
+
     return;
   }
 
 
   try{
 
+    /*
+      Saved vendor exists:
+      keep preload visible while Supabase verifies session.
+    */
 
     const {
       data,
@@ -893,9 +3330,21 @@ async function restoreLogin(){
         "cezoo_vendor_id"
       );
 
+      loginPage.style.display =
+        "block";
+
+      mainUI.style.display =
+        "none";
+
       return;
     }
 
+
+    /*
+      Valid saved session:
+      open Main UI BEFORE removing preload.
+      So refresh lo login screen flash avvadu.
+    */
 
     openMainUI(
       data
@@ -903,7 +3352,6 @@ async function restoreLogin(){
 
 
   }catch(error){
-
 
     console.error(
       "Restore login:",
@@ -915,14 +3363,288 @@ async function restoreLogin(){
       "cezoo_vendor_id"
     );
 
+
+    loginPage.style.display =
+      "block";
+
+    mainUI.style.display =
+      "none";
+
+
+  }finally{
+
+    hideAppPreloader();
+
   }
 
 }
 
 
+
+/* =====================================
+
+   BOTTOM NAV
+
+===================================== */
+
+
+
+const vendorNavItems =
+
+document.querySelectorAll(
+
+  ".vendorNavItem"
+
+);
+
+
+
+
+
+const vendorPages =
+
+document.querySelectorAll(
+
+  ".vendorPage"
+
+);
+
+
+
+
+
+
+
+function openVendorPage(pageId){
+
+
+
+  vendorPages.forEach(page=>{
+
+
+
+    page.classList.toggle(
+
+      "active",
+
+      page.id === pageId
+
+    );
+
+
+
+  });
+
+
+
+
+
+  vendorNavItems.forEach(item=>{
+
+
+
+    item.classList.toggle(
+
+      "active",
+
+      item.dataset.page === pageId
+
+    );
+
+
+
+  });
+
+
+
+
+
+  window.scrollTo(
+
+    0,
+
+    0
+
+  );
+
+
+
+}
+
+
+
+
+
+
+
+vendorNavItems.forEach(item=>{
+
+
+
+  item.addEventListener(
+
+    "click",
+
+    function(){
+
+
+
+      openVendorPage(
+
+        this.dataset.page
+
+      );
+
+
+
+    }
+
+  );
+
+
+
+});
+
+
+
+
+
+
+
+/* =====================================
+
+   LOGOUT
+
+===================================== */
+
+
+
+document
+
+.getElementById(
+
+  "logoutButton"
+
+)
+
+.addEventListener(
+
+  "click",
+
+  function(){
+
+
+
+    /* REMOVE SESSION */
+
+
+
+    localStorage.removeItem(
+
+      "cezoo_vendor_id"
+
+    );
+
+
+
+
+
+    sessionStorage.removeItem(
+
+      "cezoo_vendor_active_page"
+
+    );
+
+
+
+
+
+    currentVendor =
+
+      null;
+
+
+
+
+
+    /* MAIN HIDE */
+
+
+
+    mainUI.style.display =
+
+      "none";
+
+
+
+
+
+    /* LOGIN SHOW */
+
+
+
+    loginPage.style.display =
+
+      "block";
+
+
+
+
+
+    /* PASSWORD CLEAR */
+
+
+
+    password.value =
+
+      "";
+
+
+
+
+
+    clearError();
+
+
+
+
+
+    /* RESET NAV */
+
+
+
+    openVendorPage(
+
+      "ordersPage"
+
+    );
+
+
+
+
+
+    window.scrollTo(
+
+      0,
+
+      0
+
+    );
+
+
+
+  }
+
+);
+
 restoreLogin();
+
+
 
 </script>
 
+
+
 </body>
+
 </html>
