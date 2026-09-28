@@ -234,16 +234,51 @@ body.keyboard-open .loginTop{
 body.keyboard-open .loginTop img{
   display:none;
 }
+/* =========================
+   KEYBOARD OPEN — HALF MOVE ONLY
+========================= */
 
+body.keyboard-open .loginTop{
+  height:24dvh;
+  min-height:170px;
+
+  padding:0 8px;
+
+  opacity:1;
+
+  pointer-events:none;
+
+  overflow:hidden;
+}
+
+
+/* image half paiki slide */
+body.keyboard-open .loginTop img{
+  display:block;
+
+  width:105%;
+  height:280px;
+
+  object-fit:contain;
+
+  transform:translateY(-55px);
+}
+
+
+/* login sheet konchem matrame paiki */
 body.keyboard-open .loginBottom{
-  min-height:100dvh;
+  min-height:auto;
 
-  margin-top:0;
+  margin-top:-25px;
 
-  padding-top:
-    calc(35px + env(safe-area-inset-top));
+  padding-top:30px;
 
-  border-radius:0;
+  border-radius:32px 32px 0 0;
+}
+
+
+body.keyboard-open .loginTitle{
+  margin-bottom:22px;
 }
 
 
