@@ -1512,6 +1512,129 @@ body.keyboard-open .loginTitle{
   background:#e5e5ea;
 }
 
+
+/* =====================================
+   PRODUCTS PAGE
+===================================== */
+
+.productsPageWrap{
+  padding:
+    calc(22px + env(safe-area-inset-top))
+    16px
+    20px;
+}
+
+.productsPageTitle{
+  margin:0 0 16px;
+  font-size:24px;
+  font-weight:900;
+  color:#171717;
+}
+
+.vendorProductsGrid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+
+.vendorProductCard{
+  min-width:0;
+  padding:10px;
+  background:#fff;
+  border:1px solid #eeeeF3;
+  border-radius:16px;
+}
+
+.vendorProductImage{
+  width:100%;
+  aspect-ratio:1/1;
+  border-radius:12px;
+  background:#f7f7f8;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.vendorProductImage img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}
+
+.vendorProductName{
+  margin-top:9px;
+  color:#1d1d1f;
+  font-size:13px;
+  font-weight:800;
+  line-height:1.25;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.vendorProductMeta{
+  margin-top:4px;
+  color:#8d8d94;
+  font-size:11px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.vendorProductPrice{
+  margin-top:7px;
+  color:#171717;
+  font-size:14px;
+  font-weight:900;
+}
+
+.vendorProductOldPrice{
+  margin-left:5px;
+  color:#aaa;
+  font-size:11px;
+  font-weight:500;
+  text-decoration:line-through;
+}
+
+.vendorProductsState{
+  grid-column:1/-1;
+  padding:55px 15px;
+  text-align:center;
+  color:#999;
+  font-size:13px;
+}
+
+
+/* =====================================
+   PRODUCTS INFINITE SCROLL
+===================================== */
+.vendorProductsLoadMore{
+  grid-column:1/-1;
+  min-height:58px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.vendorProductsLoadMore.hidden{
+  display:none;
+}
+
+.vendorProductsSpinner{
+  width:27px;
+  height:27px;
+  border:3px solid #ecebff;
+  border-top-color:#685cff;
+  border-radius:50%;
+  animation:vendorProductsSpin .7s linear infinite;
+}
+
+@keyframes vendorProductsSpin{
+  to{ transform:rotate(360deg); }
+}
+
 </style>
 
 </head>
@@ -1759,15 +1882,21 @@ body.keyboard-open .loginTitle{
 
 
     <section
-
       class="vendorPage"
-
       id="productsPage"
-
     >
+      <div class="productsPageWrap">
+        <h1 class="productsPageTitle">Products</h1>
 
-      <!-- Present blank -->
-
+        <div
+          class="vendorProductsGrid"
+          id="vendorProductsGrid"
+        >
+          <div class="vendorProductsState">
+            Loading products...
+          </div>
+        </div>
+      </div>
     </section>
 
 
@@ -2756,14 +2885,485 @@ function clearError(){
 ============================= */
 
 
-async function loadProfileProductStats(vendor){
-  const totalEl = document.getElementById("profileTotalProducts");
-  const outEl = document.getElementById("profileOutOfStock");
-  if(!totalEl || !outEl) return;
 
-  totalEl.textContent = "0";
-  outEl.textContent = "0";
+const PRODUCT_TABLES = [
+  "cezoogroceries",
+  "fresh_products",
+  "icecreams",
+  "food_items",
+  "restaurant_food_items",
+  "cakes",
+  "cezoocafe",
+  "cool_drinks_products",
+  "vegetable_products",
+  "fruit_products",
+  "gsr_products",
+  "vijaya_lakshmi_products",
+  "juttigastore"
+];
+
+const PRODUCTS_PAGE_SIZE = 12;
+
+let vendorProductsCache = [];
+    vendorProductsVisibleCount = 0;
+    disconnectVendorProductsObserver();
+let vendorProductsVisibleCount = 0;
+let vendorProductsObserver = null;
+let vendorProductsLoadingMore = false;
+
+
+function getVendorProductId(){
+  return currentVendor?.id ?? null;
 }
+
+
+function escapeVendorHtml(value){
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+
+function isVendorProductOutOfStock(product){
+
+  if(product.in_stock === false){
+    return true;
+  }
+
+  if(
+    typeof product.stock === "number" &&
+    product.stock <= 0
+  ){
+    return true;
+  }
+
+  if(
+    typeof product.stock_quantity === "number" &&
+    product.stock_quantity <= 0
+  ){
+    return true;
+  }
+
+  if(
+    typeof product.available_quantity === "number" &&
+    product.available_quantity <= 0
+  ){
+    return true;
+  }
+
+  const status =
+    String(
+      product.stock_status ??
+      product.availability ??
+      ""
+    )
+    .trim()
+    .toLowerCase();
+
+  return [
+    "out of stock",
+    "out_of_stock",
+    "unavailable"
+  ].includes(status);
+}
+
+
+async function fetchLoggedVendorProducts(){
+
+  const vendorId =
+    getVendorProductId();
+
+  if(vendorId == null){
+    return [];
+  }
+
+  const jobs =
+    PRODUCT_TABLES.map(
+      async table => {
+
+        try{
+
+          const {
+            data,
+            error
+          } =
+          await sb
+            .from(table)
+            .select("*")
+            .eq(
+              "vendor_id",
+              vendorId
+            );
+
+          if(error){
+            console.warn(
+              "Product table:",
+              table,
+              error.message
+            );
+            return [];
+          }
+
+          return (data || []).map(
+            product => ({
+              ...product,
+              _table:table
+            })
+          );
+
+        }catch(error){
+
+          console.warn(
+            "Product load:",
+            table,
+            error
+          );
+
+          return [];
+        }
+
+      }
+    );
+
+  const results =
+    await Promise.all(jobs);
+
+  return results.flat();
+}
+
+
+function vendorProductCardHtml(product){
+
+  const name =
+    product.product_name ||
+    product.name ||
+    "Product";
+
+  const image =
+    product.image1 ||
+    product.image ||
+    "";
+
+  const quantity =
+    product.quantity ?? "";
+
+  const unit =
+    product.unit ?? "";
+
+  const price =
+    product.discount_price ??
+    product.price ??
+    product.original_price ??
+    "";
+
+  const original =
+    product.original_price ?? "";
+
+  const oldPrice =
+    original !== "" &&
+    price !== "" &&
+    Number(original) > Number(price)
+      ? `<span class="vendorProductOldPrice">₹${escapeVendorHtml(original)}</span>`
+      : "";
+
+  return `
+    <article class="vendorProductCard">
+
+      <div class="vendorProductImage">
+        ${
+          image
+          ? `<img src="${escapeVendorHtml(image)}" alt="${escapeVendorHtml(name)}" loading="lazy">`
+          : ""
+        }
+      </div>
+
+      <div class="vendorProductName">
+        ${escapeVendorHtml(name)}
+      </div>
+
+      <div class="vendorProductMeta">
+        ${escapeVendorHtml(quantity)} ${escapeVendorHtml(unit)}
+      </div>
+
+      <div class="vendorProductPrice">
+        ${price !== "" ? "₹" + escapeVendorHtml(price) : ""}
+        ${oldPrice}
+      </div>
+
+    </article>
+  `;
+}
+
+
+function disconnectVendorProductsObserver(){
+
+  if(vendorProductsObserver){
+    vendorProductsObserver.disconnect();
+    vendorProductsObserver = null;
+  }
+
+}
+
+
+function setupVendorProductsObserver(){
+
+  disconnectVendorProductsObserver();
+
+  const sentinel =
+    document.getElementById(
+      "vendorProductsLoadMore"
+    );
+
+  if(
+    !sentinel ||
+    sentinel.classList.contains("hidden")
+  ){
+    return;
+  }
+
+  vendorProductsObserver =
+    new IntersectionObserver(
+      entries=>{
+
+        if(
+          entries.some(entry=>entry.isIntersecting)
+        ){
+          loadNextVendorProducts();
+        }
+
+      },
+      {
+        root:null,
+        rootMargin:"100px 0px",
+        threshold:0.01
+      }
+    );
+
+  vendorProductsObserver.observe(
+    sentinel
+  );
+}
+
+
+function renderVendorProductsInitial(){
+
+  const grid =
+    document.getElementById(
+      "vendorProductsGrid"
+    );
+
+  if(!grid){
+    return;
+  }
+
+  disconnectVendorProductsObserver();
+
+  if(!vendorProductsCache.length){
+
+    grid.innerHTML =
+      '<div class="vendorProductsState">No products found</div>';
+
+    return;
+  }
+
+  vendorProductsVisibleCount =
+    Math.min(
+      PRODUCTS_PAGE_SIZE,
+      vendorProductsCache.length
+    );
+
+  const firstProducts =
+    vendorProductsCache.slice(
+      0,
+      vendorProductsVisibleCount
+    );
+
+  const hasMore =
+    vendorProductsVisibleCount <
+    vendorProductsCache.length;
+
+  grid.innerHTML =
+    firstProducts
+      .map(vendorProductCardHtml)
+      .join("") +
+    `
+      <div
+        class="vendorProductsLoadMore ${hasMore ? "" : "hidden"}"
+        id="vendorProductsLoadMore"
+      >
+        <div class="vendorProductsSpinner"></div>
+      </div>
+    `;
+
+  if(hasMore){
+    setupVendorProductsObserver();
+  }
+}
+
+
+function loadNextVendorProducts(){
+
+  if(vendorProductsLoadingMore){
+    return;
+  }
+
+  if(
+    vendorProductsVisibleCount >=
+    vendorProductsCache.length
+  ){
+    disconnectVendorProductsObserver();
+    return;
+  }
+
+  vendorProductsLoadingMore = true;
+
+  const sentinel =
+    document.getElementById(
+      "vendorProductsLoadMore"
+    );
+
+  if(sentinel){
+    sentinel.classList.remove("hidden");
+  }
+
+  /*
+    Small delay lets the spinner be visible naturally
+    while the next local batch is painted.
+  */
+  setTimeout(()=>{
+
+    const grid =
+      document.getElementById(
+        "vendorProductsGrid"
+      );
+
+    if(!grid){
+      vendorProductsLoadingMore = false;
+      return;
+    }
+
+    const nextEnd =
+      Math.min(
+        vendorProductsVisibleCount +
+        PRODUCTS_PAGE_SIZE,
+        vendorProductsCache.length
+      );
+
+    const nextProducts =
+      vendorProductsCache.slice(
+        vendorProductsVisibleCount,
+        nextEnd
+      );
+
+    if(sentinel){
+      sentinel.insertAdjacentHTML(
+        "beforebegin",
+        nextProducts
+          .map(vendorProductCardHtml)
+          .join("")
+      );
+    }
+
+    vendorProductsVisibleCount =
+      nextEnd;
+
+    vendorProductsLoadingMore =
+      false;
+
+    if(
+      vendorProductsVisibleCount >=
+      vendorProductsCache.length
+    ){
+
+      if(sentinel){
+        sentinel.classList.add("hidden");
+      }
+
+      disconnectVendorProductsObserver();
+
+    }
+
+  },220);
+}
+
+
+async function loadVendorProducts(){
+
+  const grid =
+    document.getElementById(
+      "vendorProductsGrid"
+    );
+
+  if(grid){
+
+    grid.innerHTML =
+      `
+        <div class="vendorProductsLoadMore">
+          <div class="vendorProductsSpinner"></div>
+        </div>
+      `;
+
+  }
+
+  disconnectVendorProductsObserver();
+
+  vendorProductsVisibleCount = 0;
+  vendorProductsLoadingMore = false;
+
+  vendorProductsCache =
+    await fetchLoggedVendorProducts();
+
+  renderVendorProductsInitial();
+
+  updateProfileProductStats(
+    vendorProductsCache
+  );
+}
+
+
+function updateProfileProductStats(products){
+
+  const totalEl =
+    document.getElementById(
+      "profileTotalProducts"
+    );
+
+  const outEl =
+    document.getElementById(
+      "profileOutOfStock"
+    );
+
+  if(totalEl){
+    totalEl.textContent =
+      String(products.length);
+  }
+
+  if(outEl){
+    outEl.textContent =
+      String(
+        products.filter(
+          isVendorProductOutOfStock
+        ).length
+      );
+  }
+}
+
+
+async function loadProfileProductStats(vendor){
+
+  if(!vendorProductsCache.length){
+    vendorProductsCache =
+      await fetchLoggedVendorProducts();
+  }
+
+  updateProfileProductStats(
+    vendorProductsCache
+  );
+}
+
 
 function openMainUI(vendor){
 
@@ -2861,7 +3461,7 @@ function openMainUI(vendor){
 
   ).textContent = location;
 
-  loadProfileProductStats(vendor);
+  loadVendorProducts();
 
 
 
