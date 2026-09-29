@@ -2000,6 +2000,250 @@ body.keyboard-open .loginTitle{
 .vendorPackSlider.dragging .vendorPackSliderThumb{transition:none}.vendorPackSlider.done{opacity:.62;pointer-events:none}.vendorPackSlider.done .vendorPackSliderTrack{color:#777}.vendorPackSlider.done .vendorPackSliderThumb{background:#24a15b}
 @media(max-width:380px){.vendorOrderItem{grid-template-columns:64px minmax(0,1fr) auto}.vendorOrderImageWrap,.vendorOrderImage{width:64px;height:64px}}
 
+
+/* =====================================
+   STATUS — PACKED ORDER HISTORY
+===================================== */
+.statusPageWrap{
+  padding:calc(22px + env(safe-area-inset-top)) 16px 25px;
+}
+.statusPageTitle{
+  margin:0 0 18px;
+  color:#171717;
+  font-size:24px;
+  font-weight:900;
+}
+.vendorPackedHistory{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.vendorPackedOrder{
+  border:1px solid #ececf2;
+  border-radius:16px;
+  background:#fff;
+  overflow:hidden;
+}
+.vendorPackedSummary{
+  width:100%;
+  min-height:64px;
+  padding:12px 14px;
+  border:0;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  text-align:left;
+  cursor:pointer;
+}
+.vendorPackedSummaryMain{flex:1;min-width:0}
+.vendorPackedOrderId{
+  display:block;
+  color:#171717;
+  font-size:14px;
+  font-weight:900;
+}
+.vendorPackedOrderTime{
+  display:block;
+  margin-top:5px;
+  color:#9898a0;
+  font-size:10px;
+  font-weight:600;
+}
+.vendorPackedBadge{
+  flex:0 0 auto;
+  padding:6px 9px;
+  border-radius:999px;
+  background:#edf9ef;
+  color:#159447;
+  font-size:10px;
+  font-weight:900;
+}
+.vendorPackedArrow{
+  flex:0 0 auto;
+  color:#777;
+  font-size:22px;
+  line-height:1;
+  transition:transform .2s ease;
+}
+.vendorPackedOrder.open .vendorPackedArrow{transform:rotate(90deg)}
+.vendorPackedDetails{
+  display:none;
+  padding:0 14px 14px;
+  border-top:1px solid #f1f1f4;
+}
+.vendorPackedOrder.open .vendorPackedDetails{display:block}
+.vendorPackedDetailRow{
+  display:flex;
+  justify-content:space-between;
+  gap:15px;
+  padding:11px 0;
+  border-bottom:1px dashed #ececf1;
+  color:#777;
+  font-size:11px;
+}
+.vendorPackedDetailRow:last-child{border-bottom:0}
+.vendorPackedDetailRow strong{
+  color:#222;
+  text-align:right;
+  overflow-wrap:anywhere;
+}
+.vendorPackedItems{
+  margin-top:10px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.vendorPackedItem{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:9px;
+  background:#f8f8fa;
+  border-radius:11px;
+}
+.vendorPackedItem img{
+  width:42px;height:42px;object-fit:contain;border-radius:9px;background:#fff;
+}
+.vendorPackedItemInfo{flex:1;min-width:0}
+.vendorPackedItemInfo strong{
+  display:block;color:#222;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.vendorPackedItemInfo span{
+  display:block;margin-top:4px;color:#888;font-size:10px;font-weight:700;
+}
+.vendorStatusEmpty{
+  padding:70px 15px;text-align:center;color:#999;font-size:13px;
+}
+
+
+.vendorStatusSearchWrap{
+  position:relative;
+  margin:0 0 16px;
+}
+.vendorStatusSearch{
+  width:100%;
+  height:46px;
+  padding:0 44px 0 16px;
+  border:1px solid #e7e7ed;
+  border-radius:15px;
+  background:#f8f8fa;
+  color:#171717;
+  font-size:13px;
+  font-weight:600;
+  outline:none;
+}
+.vendorStatusSearch:focus{
+  background:#fff;
+  border-color:#685cff;
+  box-shadow:0 0 0 3px rgba(104,92,255,.08);
+}
+.vendorStatusSearchIcon{
+  position:absolute;
+  right:15px;
+  top:50%;
+  width:18px;
+  height:18px;
+  transform:translateY(-50%);
+  fill:none;
+  stroke:#92929a;
+  stroke-width:2;
+  stroke-linecap:round;
+}
+.vendorPackedStatusLine{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  margin-top:6px;
+}
+.vendorPackedStatusText{
+  color:#777;
+  font-size:10px;
+  font-weight:700;
+}
+
+
+.vendorDeliveryPartnerBox{
+  margin-top:10px;
+  padding:11px 12px;
+  border-radius:12px;
+  background:#f7f6ff;
+  border:1px solid #ebe8ff;
+}
+.vendorDeliveryPartnerTitle{
+  margin-bottom:8px;
+  color:#685cff;
+  font-size:10px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.35px;
+}
+.vendorDeliveryPartnerInfo{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.vendorDeliveryPartnerInfo strong{
+  display:block;
+  color:#222;
+  font-size:11px;
+  font-weight:900;
+}
+.vendorDeliveryPartnerInfo span{
+  display:block;
+  margin-top:3px;
+  color:#777;
+  font-size:10px;
+  font-weight:700;
+}
+.vendorDeliveryPartnerCall{
+  flex:0 0 auto;
+  padding:7px 10px;
+  border-radius:9px;
+  background:#685cff;
+  color:#fff !important;
+  font-size:10px !important;
+  font-weight:900 !important;
+  text-decoration:none;
+}
+
+
+.vendorStatusLoading{
+  min-height:220px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:10px;
+  color:#8b8b94;
+  font-size:11px;
+  font-weight:800;
+}
+.vendorStatusSpinner{
+  width:28px;
+  height:28px;
+  border:3px solid #ecebff;
+  border-top-color:#685cff;
+  border-radius:50%;
+  animation:vendorStatusSpin .7s linear infinite;
+}
+@keyframes vendorStatusSpin{to{transform:rotate(360deg)}}
+
+
+.vendorEmptyCover{
+  min-height:52vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+}
+.vendorEmptyImage{
+  display:block;
+  width:min(210px,58vw);
+  height:auto;
+  object-fit:contain;
+}
 </style>
 
 
@@ -2309,16 +2553,27 @@ body.keyboard-open .loginTitle{
 
 
 
-    <section
-
-      class="vendorPage"
-
-      id="statusPage"
-
-    >
-
-      <!-- Present blank -->
-
+    <section class="vendorPage" id="statusPage">
+      <div class="statusPageWrap">
+        <h1 class="statusPageTitle">Status</h1>
+        <div class="vendorStatusSearchWrap">
+          <input
+            id="vendorStatusSearch"
+            class="vendorStatusSearch"
+            type="search"
+            placeholder="Search Order ID, customer or status"
+            autocomplete="off"
+            oninput="renderVendorPackedHistory()"
+          >
+          <svg class="vendorStatusSearchIcon" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="M20 20l-4-4"></path>
+          </svg>
+        </div>
+        <div id="vendorPackedHistory" class="vendorPackedHistory">
+          <div class="vendorStatusEmpty">No packed orders yet</div>
+        </div>
+      </div>
     </section>
 
 
@@ -5075,6 +5330,307 @@ const VENDOR_ORDER_TABLES = [
   {table:"cash_delivery_orders", payment:"CASH", deliveryTable:"delivery_cash_orders"},
   {table:"upi_orders", payment:"UPI", deliveryTable:"delivery_upi_orders"}
 ];
+
+let vendorPackedOrdersHistory=[];
+let vendorStatusChannels=[];
+let vendorStatusLastSignature="";
+let vendorStatusHasLoaded=false;
+
+function packedHistoryKey(order){
+  return `${order?._deliveryTable||order?._sourceTable||""}__${order?.source_order_id??order?.order_id??order?.id??""}`;
+}
+
+function rememberPackedVendorOrder(order){
+  if(!order)return;
+  const copy={
+    ...order,
+    order_status:"packed",
+    delivery_status:"assigned",
+    _vendorItems:(order._vendorItems||[]).map(i=>({...i})),
+    _packedDisplayAt:new Date().toISOString()
+  };
+  const key=packedHistoryKey(copy);
+  vendorPackedOrdersHistory=vendorPackedOrdersHistory.filter(x=>packedHistoryKey(x)!==key);
+  vendorPackedOrdersHistory.unshift(copy);
+  renderVendorPackedHistory();
+  setTimeout(()=>loadVendorStatusHistory(),300);
+}
+
+function parseDeliveryItems(value){
+  if(Array.isArray(value))return value;
+  if(typeof value==="string"){
+    try{
+      const parsed=JSON.parse(value);
+      return Array.isArray(parsed)?parsed:[];
+    }catch(e){}
+  }
+  return [];
+}
+
+/*
+  STATUS SOURCE OF TRUTH:
+  Read the rows that the vendor itself inserted into
+  delivery_cash_orders / delivery_upi_orders.
+  Do not depend on localStorage or the current page session.
+*/
+async function loadVendorStatusHistory(){
+  const statusRoot=document.getElementById("vendorPackedHistory");
+  if(statusRoot && !vendorStatusHasLoaded && !vendorPackedOrdersHistory.length){
+    statusRoot.innerHTML=`
+      <div class="vendorStatusLoading">
+        <span class="vendorStatusSpinner"></span>
+        <span>Loading order status...</span>
+      </div>`;
+  }
+
+  if(!currentVendor){
+    vendorPackedOrdersHistory=[];
+    renderVendorPackedHistory();
+    return;
+  }
+
+  const rows=[];
+
+  for(const cfg of VENDOR_ORDER_TABLES){
+    try{
+      /*
+        IMPORTANT:
+        Some older delivery rows may not have a usable vendor_id.
+        Load recent rows first, then match this vendor by:
+          1) vendor_id
+          2) vendor_mobile
+          3) exact product_table + product_id ownership
+      */
+      const {data,error}=await sb
+        .from(cfg.deliveryTable)
+        .select("*")
+        .order("created_at",{ascending:false})
+        .limit(500);
+
+      if(error){
+        console.error("Vendor Status DB load failed:",cfg.deliveryTable,error);
+        continue;
+      }
+
+      for(const d of (data||[])){
+        const items=parseDeliveryItems(d.items);
+        const matchedItems=[];
+        const productMap=orderProductMap();
+
+        for(const item of items){
+          const table=orderProductTable(item);
+          const pid=orderProductId(item);
+          const product=(table && pid!==null && pid!==undefined)
+            ? productMap.get(orderProductKey(table,pid))
+            : null;
+
+          if(product && String(product.vendor_id)===String(currentVendor.id)){
+            matchedItems.push({...item,_product:product});
+          }
+        }
+
+        const sameVendorId=
+          d.vendor_id!==null && d.vendor_id!==undefined &&
+          String(d.vendor_id)===String(currentVendor.id);
+
+        const sameVendorMobile=
+          String(d.vendor_mobile||"").replace(/\D/g,"").slice(-10) &&
+          String(d.vendor_mobile||"").replace(/\D/g,"").slice(-10)===
+          String(currentVendor.mobile||"").replace(/\D/g,"").slice(-10);
+
+        if(!sameVendorId && !sameVendorMobile && !matchedItems.length){
+          continue;
+        }
+
+        rows.push({
+          ...d,
+          id:d.source_order_id ?? d.id,
+          _sourceTable:cfg.table,
+          _deliveryTable:cfg.deliveryTable,
+          _payment:cfg.payment,
+          _vendorItems:matchedItems.length
+            ? matchedItems
+            : items.map(item=>({...item})),
+          order_status:"packed",
+          delivery_status:String(d.delivery_status||"assigned").toLowerCase().trim(),
+          _packedDisplayAt:d.vendor_packed_at||d.sent_to_delivery_at||d.created_at
+        });
+      }
+    }catch(e){
+      console.error("Vendor Status exception:",cfg.deliveryTable,e);
+    }
+  }
+
+  const seen=new Set();
+  const nextHistory=rows.filter(o=>{
+    const key=packedHistoryKey(o);
+    if(seen.has(key))return false;
+    seen.add(key);
+    return true;
+  });
+
+  const nextSignature=JSON.stringify(nextHistory.map(o=>[
+    packedHistoryKey(o),
+    o.delivery_status||"",
+    o.delivery_boy_accepted||false,
+    o.delivery_boy_name||"",
+    o.delivery_boy_mobile||""
+  ]));
+
+  if(nextSignature===vendorStatusLastSignature){
+    vendorStatusHasLoaded=true;
+    return;
+  }
+
+  vendorStatusLastSignature=nextSignature;
+  vendorPackedOrdersHistory=nextHistory;
+  vendorStatusHasLoaded=true;
+  renderVendorPackedHistory();
+}
+
+function stopVendorStatusRealtime(){
+  vendorStatusChannels.forEach(ch=>{try{sb.removeChannel(ch)}catch(e){}});
+  vendorStatusChannels=[];
+  vendorStatusHasLoaded=false;
+  vendorStatusLastSignature="";
+}
+
+function startVendorStatusRealtime(){
+  stopVendorStatusRealtime();
+  if(!currentVendor)return;
+
+  VENDOR_ORDER_TABLES.forEach(cfg=>{
+    const ch=sb
+      .channel(`vendor-delivery-status-${cfg.deliveryTable}-${currentVendor.id}`)
+      .on("postgres_changes",{
+        event:"*",
+        schema:"public",
+        table:cfg.deliveryTable
+      },()=>{
+        clearTimeout(window.__vendorStatusTimer);
+        window.__vendorStatusTimer=setTimeout(loadVendorStatusHistory,450);
+      })
+      .subscribe();
+
+    vendorStatusChannels.push(ch);
+  });
+}
+
+function toggleVendorPackedDetails(button){
+  button?.closest(".vendorPackedOrder")?.classList.toggle("open");
+}
+
+async function refreshVendorPackedStatuses(){
+  await loadVendorStatusHistory();
+}
+
+function renderVendorPackedHistory(){
+  const root=document.getElementById("vendorPackedHistory");
+  if(!root)return;
+
+  // Preserve currently opened Status dropdowns and page position.
+  const openStatusKeys=new Set(
+    [...root.querySelectorAll(".vendorPackedOrder.open")]
+      .map(el=>el.dataset.statusKey)
+      .filter(Boolean)
+  );
+  const savedScrollY=window.scrollY;
+  const search=String(document.getElementById("vendorStatusSearch")?.value||"")
+    .trim().toLowerCase();
+
+  const filtered=vendorPackedOrdersHistory.filter(order=>{
+    const status=String(order.delivery_status||order.order_status||order.status||"packed");
+    const hay=[
+      order.order_id,order.order_number,order.id,
+      orderCustomerName(order),orderCustomerMobile(order),
+      status
+    ].join(" ").toLowerCase();
+    return !search || hay.includes(search);
+  });
+
+  if(!filtered.length){
+    root.innerHTML=`<div class="vendorEmptyCover"><img class="vendorEmptyImage" src="log.png" alt=""></div>`;
+    return;
+  }
+
+  root.innerHTML=filtered.map(order=>{
+    const items=order._vendorItems||[];
+    const orderId=order.order_id??order.order_number??order.id??"—";
+    const customer=orderCustomerName(order);
+    const mobile=orderCustomerMobile(order);
+    const address=orderCustomerAddress(order);
+    const total=(order._vendorItems||[]).reduce(
+      (sum,item)=>sum+Number(orderLineTotal(item,item._product||{})||0),
+      0
+    );
+    const statusRaw=String(order.delivery_status||order.order_status||order.status||"assigned").trim().toLowerCase();
+    const statusMap={
+      assigned:"Packed",
+      accepted:"Delivery Accepted",
+      picked_up:"Picked Up",
+      on_the_way:"On The Way",
+      delivered:"Delivered",
+      cancelled:"Cancelled",
+      canceled:"Cancelled"
+    };
+    const statusLabel=statusMap[statusRaw]||
+      statusRaw.replaceAll("_"," ").replace(/\b\w/g,c=>c.toUpperCase());
+    const time=new Date(order._packedDisplayAt||order.created_at||Date.now())
+      .toLocaleString("en-IN",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"});
+
+    const itemHtml=items.map(item=>{
+      const p=item._product||{};
+      const img=orderImage(p)||item?.image1||item?.image||item?.image_url||item?.product_image||"";
+      const name=orderName(item,p);
+      const qty=orderQty(item);
+      const unit=orderPack(item,p);
+      return `<div class="vendorPackedItem">
+        ${img?`<img src="${orderEsc(img)}" alt="">`:""}
+        <div class="vendorPackedItemInfo">
+          <strong>${orderEsc(name)}</strong>
+          <span>×${qty}${unit?` · ${orderEsc(unit)}`:""}</span>
+        </div>
+      </div>`;
+    }).join("");
+
+    const statusKey=packedHistoryKey(order);
+    return `<article class="vendorPackedOrder${openStatusKeys.has(statusKey)?" open":""}" data-status-key="${orderEsc(statusKey)}">
+      <button class="vendorPackedSummary" type="button" onclick="toggleVendorPackedDetails(this)">
+        <div class="vendorPackedSummaryMain">
+          <span class="vendorPackedOrderId">Order #${orderEsc(orderId)}</span>
+          <span class="vendorPackedOrderTime">${orderEsc(time)}</span>
+        </div>
+        <span class="vendorPackedBadge">${orderEsc(statusLabel)}</span>
+        <span class="vendorPackedArrow">›</span>
+      </button>
+      <div class="vendorPackedDetails">
+        <div class="vendorPackedDetailRow"><span>Customer</span><strong>${orderEsc(customer)}</strong></div>
+        ${mobile?`<div class="vendorPackedDetailRow"><span>Mobile</span><strong>${orderEsc(mobile)}</strong></div>`:""}
+        ${address?`<div class="vendorPackedDetailRow"><span>Address</span><strong>${orderEsc(address)}</strong></div>`:""}
+        <div class="vendorPackedDetailRow"><span>Payment</span><strong>${order._payment==="UPI"?"Paid using UPI":"Cash on Delivery"}</strong></div>
+        <div class="vendorPackedDetailRow"><span>Total Bill</span><strong>₹${Number(total||0).toFixed(2)}</strong></div>
+        ${(order.delivery_boy_accepted===true || order.delivery_boy_name || order.delivery_boy_mobile) ? `
+          <div class="vendorDeliveryPartnerBox">
+            <div class="vendorDeliveryPartnerTitle">Delivery Partner</div>
+            <div class="vendorDeliveryPartnerInfo">
+              <div>
+                <strong>${orderEsc(order.delivery_boy_name||"Delivery Partner")}</strong>
+                <span>${orderEsc(order.delivery_boy_mobile||"")}</span>
+              </div>
+              ${order.delivery_boy_mobile ? `<a class="vendorDeliveryPartnerCall" href="tel:${orderEsc(String(order.delivery_boy_mobile).replace(/\D/g,""))}">Call</a>` : ""}
+            </div>
+          </div>` : ""}
+        ${itemHtml?`<div class="vendorPackedItems">${itemHtml}</div>`:""}
+      </div>
+    </article>`;
+  }).join("");
+  requestAnimationFrame(()=>{
+    if(Math.abs(window.scrollY-savedScrollY)>2){
+      window.scrollTo({top:savedScrollY,left:0,behavior:"auto"});
+    }
+  });
+}
+
 let vendorLiveOrders=[];
 let vendorOrderChannels=[];
 
@@ -5102,7 +5658,31 @@ function orderCustomerName(o){return o?.user_name||o?.customer_name||o?.name||o?
 function orderCustomerMobile(o){return o?.user_mobile||o?.customer_mobile||o?.mobile||o?.phone||o?.phone_number||""}
 function orderCustomerAddress(o){return o?.address||o?.delivery_address||o?.full_address||o?.customer_address||""}
 function orderNumber(o){return o?.order_id||o?.order_number||o?.id||""}
-function orderIsClosed(o){const x=String(o?.order_status||o?.status||"").toLowerCase().trim().replace(/\s+/g,"_");return ["packed","delivered","cancelled","canceled"].includes(x)}
+function orderIsClosed(order){
+  const status=String(
+    order?.order_status ??
+    order?.status ??
+    order?.delivery_status ??
+    ""
+  ).trim().toLowerCase();
+
+  // Orders page is ONLY for pre-pack states.
+  // Once packed or moved to any delivery stage, it must never come back here.
+  return [
+    "packed",
+    "delivery_boy_assigned",
+    "assigned",
+    "delivery_assigned",
+    "delivery_accepted",
+    "picked_up",
+    "on_the_way",
+    "out_for_delivery",
+    "delivered",
+    "completed",
+    "cancelled",
+    "canceled"
+  ].includes(status);
+}
 function prepareLiveVendorOrder(row,cfg){
   if(!row||orderIsClosed(row))return null;
   const map=orderProductMap(), matched=[];
@@ -5111,7 +5691,13 @@ function prepareLiveVendorOrder(row,cfg){
   return {...row,_sourceTable:cfg.table,_deliveryTable:cfg.deliveryTable,_payment:cfg.payment,_vendorItems:matched};
 }
 function upsertLiveVendorOrder(row,cfg){
-  const prepared=prepareLiveVendorOrder(row,cfg), key=`${cfg.table}__${row?.id}`;
+  const key=`${cfg.table}__${row?.id}`;
+  if(orderIsClosed(row)){
+    vendorLiveOrders=vendorLiveOrders.filter(o=>`${o._sourceTable}__${o.id}`!==key);
+    renderLiveVendorOrders();
+    return;
+  }
+  const prepared=prepareLiveVendorOrder(row,cfg);
   const idx=vendorLiveOrders.findIndex(o=>`${o._sourceTable}__${o.id}`===key);
   if(!prepared){if(idx>=0)vendorLiveOrders.splice(idx,1);renderLiveVendorOrders();return}
   if(idx>=0)vendorLiveOrders[idx]=prepared;else vendorLiveOrders.push(prepared);
@@ -5146,7 +5732,11 @@ function renderLiveVendorOrders(){
   const box=document.getElementById("vendorOrdersDisplay");if(!box)return;
   const pendingCount=document.getElementById("vendorPendingCount");
   if(pendingCount)pendingCount.textContent=String(vendorLiveOrders.length);
-  if(!vendorLiveOrders.length){box.className="ordersLiveState";box.innerHTML="No orders waiting<br><small>New orders will appear automatically.</small>";return}
+  if(!vendorLiveOrders.length){
+    box.className="ordersLiveState";
+    box.innerHTML=`<div class="vendorEmptyCover"><img class="vendorEmptyImage" src="log.png" alt=""></div>`;
+    return
+  }
   box.className="";
   box.innerHTML=vendorLiveOrders.slice(0,1).map(o=>{
     const total=o._vendorItems.reduce((sum,i)=>sum+orderLineTotal(i,i._product),0);
@@ -5171,27 +5761,127 @@ async function loadLiveVendorOrders(){
   }
   vendorLiveOrders=all.sort((a,b)=>new Date(a.created_at||0)-new Date(b.created_at||0));renderLiveVendorOrders();
 }
-function stopVendorOrders(){vendorOrderChannels.forEach(ch=>{try{sb.removeChannel(ch)}catch(e){}});vendorOrderChannels=[];vendorLiveOrders=[]}
+function stopVendorOrders(){vendorOrderChannels.forEach(ch=>{try{sb.removeChannel(ch)}catch(e){}});vendorOrderChannels=[];vendorLiveOrders=[];stopVendorStatusRealtime()}
 async function startVendorOrders(){
   stopVendorOrders();await loadLiveVendorOrders();
+  startVendorStatusRealtime();
   VENDOR_ORDER_TABLES.forEach(cfg=>{const ch=sb.channel(`vendor-orders-${cfg.table}-${currentVendor?.id||"x"}`).on("postgres_changes",{event:"*",schema:"public",table:cfg.table},payload=>{if(payload.eventType==="DELETE"){vendorLiveOrders=vendorLiveOrders.filter(o=>!(o._sourceTable===cfg.table&&String(o.id)===String(payload.old?.id)));renderLiveVendorOrders()}else upsertLiveVendorOrder(payload.new,cfg)}).subscribe();vendorOrderChannels.push(ch)})
 }
-async function insertPackedDelivery(order){
+async function autoSendToDelivery(order){
+  const deliveryTable=order._deliveryTable;
+  if(!deliveryTable)throw new Error("Delivery table not found");
+
+  /*
+    Keep the customer order number for delivery app matching,
+    but NEVER copy the source table primary-key `id`.
+  */
+  const customerOrderId=String(order.order_id ?? order.order_number ?? order.id ?? "");
+
   const payload={...order};
-  ["_sourceTable","_deliveryTable","_payment","_vendorItems","_product"].forEach(k=>delete payload[k]);
+
+  delete payload.id;
+  delete payload._sourceTable;
+  delete payload._orderType;
+  delete payload._payment;
+  delete payload._deliveryTable;
+  delete payload._vendorStatus;
+  delete payload._sentToDelivery;
+  delete payload._vendorItems;
+
+  payload.order_id=customerOrderId;
+  payload.source_order_id=String(order.id ?? order.order_id ?? "");
+  payload.source_order_type=order._sourceTable==="upi_orders" ? "upi" : "cash";
+  payload.sent_to_delivery_at=new Date().toISOString();
+
+  /*
+    Delivery Partner app specifically loads:
+      delivery_boy_accepted = false
+      delivery_status = assigned
+  */
+  payload.delivery_status="assigned";
+  payload.delivery_boy_accepted=false;
+
   payload.vendor_id=currentVendor.id;
-  payload.items=order._vendorItems.map(i=>{const x={...i};delete x._product;return x});
-  for(let tries=0;tries<30;tries++){
-    const {error}=await sb.from(order._deliveryTable).insert(payload);
-    if(!error)return;
+  payload.vendor_name=currentVendor.vendor_name||currentVendor.name||"";
+  payload.vendor_mobile=currentVendor.mobile||"";
+  payload.vendor_packed_at=new Date().toISOString();
+
+  payload.items=(order._vendorItems||[]).map(item=>{
+    const clean={...item};
+    delete clean._product;
+    return clean;
+  });
+
+  /*
+    If this vendor/order was already sent, do not insert it again.
+    Do not depend on delivery-table primary key for duplicate detection.
+  */
+  let existing=null;
+  try{
+    const check=await sb
+      .from(deliveryTable)
+      .select("id")
+      .eq("source_order_id",String(order.id ?? order.order_id ?? ""))
+      .eq("vendor_id",currentVendor.id)
+      .limit(1);
+
+    if(!check.error)existing=check.data;
+  }catch(e){
+    console.warn("Delivery duplicate check:",e);
+  }
+
+  if(existing&&existing.length)return existing[0];
+
+  /*
+    Source order tables can have extra columns not present in delivery tables.
+    Remove only unsupported columns reported by PostgREST and retry.
+  */
+  const safe={...payload};
+
+  for(let attempt=0;attempt<50;attempt++){
+    const {data,error}=await sb
+      .from(deliveryTable)
+      .insert(safe)
+      .select("*")
+      .maybeSingle();
+
+    if(!error)return data||safe;
+
     const msg=String(error.message||"");
-    const m=msg.match(/Could not find the '([^']+)' column|column ['\"]?([^'\" ]+)['\"]? .*schema cache/i);
-    const col=(m&&(m[1]||m[2]))||null;
-    if(error.code==="PGRST204"&&col&&Object.prototype.hasOwnProperty.call(payload,col)){delete payload[col];continue}
+
+    const missing=
+      msg.match(/Could not find the ['"]([^'"]+)['"] column/i) ||
+      msg.match(/column ['"]?([^'".\s]+)['"]? .*does not exist/i);
+
+    if(missing?.[1] && Object.prototype.hasOwnProperty.call(safe,missing[1])){
+      delete safe[missing[1]];
+      console.warn(`Delivery table missing "${missing[1]}"; retrying without it.`);
+      continue;
+    }
+
+    /*
+      If old bad code already inserted the same delivery order,
+      treat that as already sent instead of blocking Packed.
+    */
+    if(error.code==="23505" || /duplicate key value/i.test(msg)){
+      const byOrder=await sb
+        .from(deliveryTable)
+        .select("*")
+        .eq("order_id",customerOrderId)
+        .limit(1);
+
+      if(!byOrder.error && byOrder.data?.length){
+        return byOrder.data[0];
+      }
+    }
+
     throw error;
   }
-  throw new Error("Unable to match delivery table schema");
+
+  throw new Error("Could not create delivery order");
 }
+async function insertPackedDelivery(order){return autoSendToDelivery(order);}
+
 function setupVendorPackSliders(){
   document.querySelectorAll(".vendorPackSlider").forEach(slider=>{
     if(slider.dataset.ready==="1")return;
@@ -5208,18 +5898,64 @@ function setupVendorPackSliders(){
 }
 
 window.packLiveVendorOrder=async function(sourceTable,id,btn){
-  const idx=vendorLiveOrders.findIndex(o=>o._sourceTable===sourceTable&&String(o.id)===String(id));if(idx<0)return;
-  const order=vendorLiveOrders[idx];btn.disabled=true;
+  const idx=vendorLiveOrders.findIndex(o=>o._sourceTable===sourceTable&&String(o.id)===String(id));
+  if(idx<0)return;
+
+  const order=vendorLiveOrders[idx];
+  btn.disabled=true;
+
   try{
-    await insertPackedDelivery(order);
-    const {error:packedError}=await sb.from(order._sourceTable).update({order_status:"packed"}).eq("id",order.id);
-    if(packedError)throw packedError;
+    // Working reference flow: delivery table FIRST.
+    await autoSendToDelivery(order);
+
+    const packedAt=new Date().toISOString();
+
+    // Then original order -> packed, with compatibility retries.
+    let result=await sb.from(sourceTable).update({
+      order_status:"packed",
+      vendor_id:currentVendor.id,
+      vendor_name:currentVendor.vendor_name||"",
+      vendor_packed_at:packedAt,
+      vendor_packed_id:`${currentVendor.id}-${id}`
+    }).eq("id",id).select("*").maybeSingle();
+
+    let packedRow=result.data;
+    let error=result.error;
+
+    if(error&&/vendor_name|vendor_packed_at|vendor_packed_id|schema cache|column/i.test(String(error.message||""))){
+      result=await sb.from(sourceTable).update({
+        order_status:"packed",
+        vendor_id:currentVendor.id
+      }).eq("id",id).select("*").maybeSingle();
+      packedRow=result.data;
+      error=result.error;
+    }
+
+    if(error&&/vendor_id|schema cache|column/i.test(String(error.message||""))){
+      result=await sb.from(sourceTable).update({
+        order_status:"packed"
+      }).eq("id",id).select("*").maybeSingle();
+      packedRow=result.data;
+      error=result.error;
+    }
+
+    if(error)throw error;
+
+    if(!packedRow||String(packedRow.order_status||"").trim().toLowerCase()!=="packed"){
+      throw new Error("Order status was not updated to packed");
+    }
+
     order.order_status="packed";
     vendorAcceptedOrderKeys.delete(vendorLiveOrderKey(order));
+    rememberPackedVendorOrder(order);
     vendorLiveOrders.splice(idx,1);
     renderLiveVendorOrders();
-  }catch(e){
-    console.error("Pack order",e);btn.disabled=false;renderLiveVendorOrders();alert("Unable to mark packed. Please try again.");
+
+  }catch(error){
+    console.error("Packed error:",error);
+    btn.disabled=false;
+    // Show exact Supabase reason if anything still fails.
+    alert(error?.message||"Unable to mark packed. Please try again.");
   }
 };
 
@@ -5258,6 +5994,11 @@ document.querySelectorAll(
 
 
 function openVendorPage(pageId){
+
+  if(pageId==="statusPage"){
+    refreshVendorPackedStatuses();
+  }
+
 
 
 
