@@ -3433,6 +3433,167 @@ document.getElementById(
 let currentVendor = null;
 
 
+/* =====================================
+   ANDROID FCM TOKEN RECEIVER
+   Same flow as previous CEZOO Vendor code
+===================================== */
+
+let cezooFcmToken =
+  String(
+    localStorage.getItem("cezoo_fcm_token") || ""
+  ).trim();
+
+function cleanFcmToken(token){
+  return String(token ?? "").trim();
+}
+
+async function saveVendorFcmToken(){
+
+  if(
+    !currentVendor ||
+    !currentVendor.mobile ||
+    !cezooFcmToken
+  ){
+    return;
+  }
+
+  try{
+
+    const mobileValue =
+      String(currentVendor.mobile)
+        .replace(/\D/g,"")
+        .slice(-10);
+
+    if(mobileValue.length !== 10){
+      console.warn(
+        "FCM token save skipped: invalid vendor mobile"
+      );
+      return;
+    }
+
+    /* Save token in logged-in vendor_login row */
+    const {
+      error:vendorError
+    } =
+    await sb
+      .from("vendor_login")
+      .update({
+        fcm_token:cezooFcmToken,
+        fcm_token_updated_at:new Date().toISOString()
+      })
+      .eq("id",currentVendor.id);
+
+    if(vendorError){
+      console.error(
+        "Vendor FCM token save error:",
+        vendorError
+      );
+    }
+
+    /* Keep existing device-token table in sync too */
+    const {
+      error:deviceError
+    } =
+    await sb
+      .from("delivery_partner_device_tokens")
+      .upsert(
+        {
+          mobile:mobileValue,
+          device_token:cezooFcmToken,
+          updated_at:new Date().toISOString()
+        },
+        {
+          onConflict:"mobile"
+        }
+      );
+
+    if(deviceError){
+      console.warn(
+        "Device token table update warning:",
+        deviceError
+      );
+    }
+
+    if(!vendorError){
+      currentVendor.fcm_token = cezooFcmToken;
+      currentVendor.fcm_token_updated_at =
+        new Date().toISOString();
+
+      console.log(
+        "CEZOO FCM token saved in vendor_login:",
+        currentVendor.id
+      );
+    }
+
+  }catch(error){
+    console.error(
+      "FCM token save failed:",
+      error
+    );
+  }
+}
+
+window.onAndroidFcmToken =
+  async function(token){
+
+    const cleanToken =
+      cleanFcmToken(token);
+
+    if(!cleanToken){
+      return;
+    }
+
+    cezooFcmToken = cleanToken;
+    window.CEZOO_FCM_TOKEN = cleanToken;
+
+    localStorage.setItem(
+      "cezoo_fcm_token",
+      cleanToken
+    );
+
+    console.log(
+      "Real Android FCM token received"
+    );
+
+    if(currentVendor){
+      await saveVendorFcmToken();
+    }
+  };
+
+/* Android WebView event bridge */
+window.addEventListener(
+  "cezooFcmToken",
+  event => {
+
+    const token =
+      cleanFcmToken(
+        event?.detail?.token ??
+        event?.detail ??
+        ""
+      );
+
+    if(token){
+      window.onAndroidFcmToken(token);
+    }
+  }
+);
+
+/* Android may have placed the token on window before this JS ran */
+if(window.CEZOO_FCM_TOKEN){
+  const initialToken =
+    cleanFcmToken(window.CEZOO_FCM_TOKEN);
+
+  if(initialToken){
+    cezooFcmToken = initialToken;
+    localStorage.setItem(
+      "cezoo_fcm_token",
+      initialToken
+    );
+  }
+}
+
+
+
 
 
 
@@ -4867,6 +5028,9 @@ function openMainUI(vendor){
 
 
   currentVendor = vendor;
+
+  /* Login/restore success -> save this device FCM token */
+  saveVendorFcmToken();
 
 
 
