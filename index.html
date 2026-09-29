@@ -1972,8 +1972,128 @@ body.keyboard-open .loginTitle{
   transform:scale(.96);
 }
 
+
+
+/* =====================================
+   LIVE VENDOR ORDERS — CLEAN FLAT UI
+===================================== */
+.ordersPageWrap{padding:calc(18px + env(safe-area-inset-top)) 16px calc(120px + env(safe-area-inset-bottom));background:#fff;min-height:calc(100dvh - 90px)}
+.ordersPageTitle{margin:0 0 18px;color:#171717;font-size:24px;font-weight:900}
+.ordersLiveState{padding:70px 18px;text-align:center;color:#96969d;font-size:13px}
+.vendorOrderCard{margin:0 0 28px;padding:0 0 24px;background:#fff;border:0;border-radius:0;box-shadow:none;border-bottom:8px solid #f6f6f8;overflow:visible}
+.vendorOrderTop{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 0 13px;border-bottom:1px solid #eeeeF2}
+.vendorOrderNo{font-size:15px;font-weight:900;color:#171717}.vendorOrderTime{margin-top:4px;font-size:10px;color:#999}
+.vendorPaymentChip{padding:5px 9px;border-radius:8px;background:#f2f1ff;color:#685cff;font-size:9px;font-weight:900}
+.vendorOrderItem{display:grid;grid-template-columns:70px minmax(0,1fr) auto;gap:11px;align-items:center;padding:15px 0;border-bottom:1px solid #f1f1f4}
+.vendorOrderImageWrap{position:relative;width:70px;height:70px}
+.vendorOrderImage{width:70px;height:70px;border-radius:12px;background:#f7f7f8;overflow:hidden;display:flex;align-items:center;justify-content:center}.vendorOrderImage img{width:100%;height:100%;object-fit:contain}
+.vendorOrderQtyBadge{position:absolute;right:-12px;top:50%;transform:translateY(-50%);min-width:34px;height:25px;padding:0 8px;display:flex;align-items:center;justify-content:center;border-radius:999px;background:#171717;color:#fff;font-size:11px;font-weight:900;box-shadow:0 3px 9px rgba(0,0,0,.15);z-index:3}
+.vendorOrderItemName{font-size:13px;font-weight:850;color:#1b1b1d;line-height:1.3}.vendorOrderPack{margin-top:6px;font-size:13px;color:#55565d;font-weight:850;line-height:1.3}.vendorOrderPrice{text-align:right;font-size:12px;font-weight:900;color:#171717}.vendorOrderUnitPrice{display:block;margin-top:4px;font-size:9px;font-weight:600;color:#999}
+.vendorCustomerBox{padding:15px 0;border-bottom:1px solid #eeeeF2;background:#fff}.vendorCustomerLabel{margin-bottom:8px;color:#9a9aa1;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.35px}.vendorCustomerName{font-size:14px;font-weight:900;color:#171717}.vendorCustomerLine{margin-top:7px;font-size:11px;line-height:1.45;color:#626269;word-break:break-word}
+.vendorBillBox{padding:14px 0 0}.vendorBillRow{display:flex;justify-content:space-between;gap:12px;margin:5px 0;font-size:11px;color:#666}.vendorBillRow.total{margin:0 0 14px;padding:0;border:0;color:#171717;font-size:16px;font-weight:900}
+.vendorPackSlider{display:none;position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));z-index:998;width:min(430px,calc(100% - 34px));height:58px;transform:translateX(-50%);border-radius:20px;background:#f6f6f8;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;box-shadow:0 8px 24px rgba(20,20,35,.13);border:1px solid #ececf1}
+.vendorOrderCard:first-child .vendorPackSlider{display:block}
+#ordersPage{padding-bottom:82px}
+.vendorPackSliderTrack{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#685cff;font-size:12px;font-weight:900;letter-spacing:.1px;pointer-events:none}
+.vendorPackSliderTrack::after{content:'››';margin-left:8px;font-size:18px;letter-spacing:-3px;opacity:.55}
+.vendorPackSliderThumb{position:absolute;left:5px;top:5px;width:44px;height:44px;border:0;border-radius:50%;background:#685cff;color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;box-shadow:0 4px 12px rgba(104,92,255,.28);transition:transform .12s ease;z-index:2}
+.vendorPackSlider.dragging .vendorPackSliderThumb{transition:none}.vendorPackSlider.done{opacity:.62;pointer-events:none}.vendorPackSlider.done .vendorPackSliderTrack{color:#777}.vendorPackSlider.done .vendorPackSliderThumb{background:#24a15b}
+@media(max-width:380px){.vendorOrderItem{grid-template-columns:64px minmax(0,1fr) auto}.vendorOrderImageWrap,.vendorOrderImage{width:64px;height:64px}}
+
 </style>
 
+
+<style>
+.vendorOrdersSpinnerState{
+  min-height:60vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.vendorOrdersSpinner{
+  width:30px;
+  height:30px;
+  display:block;
+  border:3px solid #ecebff;
+  border-top-color:#685cff;
+  border-radius:50%;
+  animation:vendorOrderSpin .7s linear infinite;
+}
+@keyframes vendorOrderSpin{to{transform:rotate(360deg)}}
+.vendorPackText{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 62px;
+  color:#55565f;
+  font-size:12px;
+  font-weight:850;
+  letter-spacing:.1px;
+  pointer-events:none;
+}
+</style>
+
+
+<style>
+.vendorPackKnob .fa-angles-right{
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0;
+  padding:0;
+  line-height:1;
+}
+.vendorPackKnob .fa-angles-right::before{
+  content:"›";
+  display:block;
+  width:auto;
+  height:auto;
+  margin:0;
+  padding:0 0 2px 1px;
+  font-family:Arial,sans-serif;
+  font-size:29px;
+  font-weight:700;
+  line-height:1;
+}
+
+</style>
+
+
+<style>
+.vendorAcceptOrderBtn{
+  position:fixed;
+  left:50%;
+  bottom:calc(92px + env(safe-area-inset-bottom));
+  z-index:999;
+  width:min(430px,calc(100% - 34px));
+  height:58px;
+  transform:translateX(-50%);
+  border:0;
+  border-radius:20px;
+  background:#685cff;
+  color:#fff;
+  font-size:14px;
+  font-weight:900;
+  box-shadow:0 8px 24px rgba(104,92,255,.25);
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.vendorAcceptOrderBtn:active{transform:translateX(-50%) scale(.985)}
+</style>
+<style>
+.vendorPaymentModeRow{margin-top:8px;padding-top:9px;border-top:1px dashed #e7e7ec;font-size:12px;color:#666}.vendorPaymentModeRow strong{font-size:12px;color:#242429;font-weight:850}
+</style>
+
+<style>
+.vendorOrdersHeadingRow{position:sticky;top:0;z-index:80;display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 -14px 22px;padding:14px 14px 12px;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid #f0f0f3}
+.vendorOrdersHeadingRow .ordersPageTitle{margin-bottom:0}
+.vendorPendingCount{display:flex;align-items:center;justify-content:center;height:30px;padding:0 11px;border-radius:999px;background:#f1efff;color:#6659ee;font-size:11px;font-weight:850;white-space:nowrap}
+.vendorPendingCount b{margin-left:5px;font-size:12px}
+</style>
 </head>
 
 
@@ -2170,16 +2290,11 @@ body.keyboard-open .loginTitle{
 
 
 
-    <section
-
-      class="vendorPage active"
-
-      id="ordersPage"
-
-    >
-
-      <!-- Present blank -->
-
+    <section class="vendorPage active" id="ordersPage">
+      <div class="ordersPageWrap">
+        <div class="vendorOrdersHeadingRow"><h1 class="ordersPageTitle">Orders</h1><div class="vendorPendingCount">Pending <b id="vendorPendingCount">0</b></div></div>
+        <div id="vendorOrdersDisplay" class="ordersLiveState"></div>
+      </div>
     </section>
 
 
@@ -4416,9 +4531,9 @@ function openMainUI(vendor){
 
   ).textContent = location;
 
-  loadVendorProducts();
-
-
+  loadVendorProducts().then(()=>{
+    startVendorOrders();
+  });
 
 
 
@@ -4952,6 +5067,162 @@ async function restoreLogin(){
 
 
 
+
+/* =====================================
+   LIVE ORDERS — VENDOR MATCHED ITEMS ONLY
+===================================== */
+const VENDOR_ORDER_TABLES = [
+  {table:"cash_delivery_orders", payment:"CASH", deliveryTable:"delivery_cash_orders"},
+  {table:"upi_orders", payment:"UPI", deliveryTable:"delivery_upi_orders"}
+];
+let vendorLiveOrders=[];
+let vendorOrderChannels=[];
+
+function orderEsc(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;")}
+function orderItems(o){let v=o?.items||o?.products||o?.order_items||o?.cart_items||[];if(typeof v==="string"){try{v=JSON.parse(v)}catch(e){v=[]}}return Array.isArray(v)?v:[]}
+function orderProductTable(i){return i?.product_table||i?.table||i?.source_table||i?._table||""}
+function orderProductId(i){return i?.product_id??i?.id??i?.productId??null}
+function orderQty(i){const n=Number(i?.quantity??i?.qty??i?.count??1);return Number.isFinite(n)&&n>0?n:1}
+function orderProductKey(t,id){return `${String(t)}__${String(id)}`}
+function orderProductMap(){const m=new Map();vendorProductsCache.forEach(p=>m.set(orderProductKey(p._table,p.id),p));return m}
+function orderImage(p){return p?.image1||p?.image||p?.image_url||p?.product_image||""}
+function orderName(i,p){return i?.product_name||i?.name||p?.product_name||p?.name||"Product"}
+function orderPack(i,p){
+  const direct=i?.cake_weight||i?.weight||i?.pack||i?.size||i?.variant||"";
+  if(direct)return String(direct);
+  const q=i?.product_quantity??p?.quantity??"", u=i?.product_unit??p?.unit??"";
+  return `${q} ${u}`.trim();
+}
+function orderUnitPrice(i,p){
+  const vals=[i?.discount_price,i?.price,i?.unit_price,i?.selling_price,p?.discount_price,p?.price,p?.original_price];
+  for(const v of vals){const n=Number(v);if(Number.isFinite(n))return n}return 0;
+}
+function orderLineTotal(i,p){const explicit=Number(i?.line_total??i?.total_price??i?.subtotal);if(Number.isFinite(explicit)&&explicit>=0)return explicit;return orderUnitPrice(i,p)*orderQty(i)}
+function orderCustomerName(o){return o?.user_name||o?.customer_name||o?.name||o?.full_name||"Customer"}
+function orderCustomerMobile(o){return o?.user_mobile||o?.customer_mobile||o?.mobile||o?.phone||o?.phone_number||""}
+function orderCustomerAddress(o){return o?.address||o?.delivery_address||o?.full_address||o?.customer_address||""}
+function orderNumber(o){return o?.order_id||o?.order_number||o?.id||""}
+function orderIsClosed(o){const x=String(o?.order_status||o?.status||"").toLowerCase().trim().replace(/\s+/g,"_");return ["packed","delivered","cancelled","canceled"].includes(x)}
+function prepareLiveVendorOrder(row,cfg){
+  if(!row||orderIsClosed(row))return null;
+  const map=orderProductMap(), matched=[];
+  orderItems(row).forEach(i=>{const t=orderProductTable(i),id=orderProductId(i);if(!t||id==null)return;const p=map.get(orderProductKey(t,id));if(p)matched.push({...i,_product:p,product_table:t,product_id:String(id)})});
+  if(!matched.length)return null;
+  return {...row,_sourceTable:cfg.table,_deliveryTable:cfg.deliveryTable,_payment:cfg.payment,_vendorItems:matched};
+}
+function upsertLiveVendorOrder(row,cfg){
+  const prepared=prepareLiveVendorOrder(row,cfg), key=`${cfg.table}__${row?.id}`;
+  const idx=vendorLiveOrders.findIndex(o=>`${o._sourceTable}__${o.id}`===key);
+  if(!prepared){if(idx>=0)vendorLiveOrders.splice(idx,1);renderLiveVendorOrders();return}
+  if(idx>=0)vendorLiveOrders[idx]=prepared;else vendorLiveOrders.push(prepared);
+  vendorLiveOrders.sort((a,b)=>new Date(a.created_at||0)-new Date(b.created_at||0));renderLiveVendorOrders();
+}
+
+const vendorAcceptedOrderKeys = new Set();
+
+function vendorLiveOrderKey(order){
+  return String(order?._sourceTable || "") + "__" + String(order?.id ?? "");
+}
+
+async function acceptLiveVendorOrder(orderKey,button){
+  const key=String(orderKey);
+  const order=vendorLiveOrders.find(o=>vendorLiveOrderKey(o)===key);
+  if(!order)return;
+  if(button){button.disabled=true;button.textContent="Accepting...";}
+  try{
+    const {error}=await sb.from(order._sourceTable).update({order_status:"accepted"}).eq("id",order.id);
+    if(error)throw error;
+    order.order_status="accepted";
+    vendorAcceptedOrderKeys.add(key);
+    renderLiveVendorOrders();
+  }catch(e){
+    console.error("Accept order DB update",e);
+    if(button){button.disabled=false;button.textContent="Accept the Order";}
+    alert("Unable to accept order. Please try again.");
+  }
+}
+
+function renderLiveVendorOrders(){
+  const box=document.getElementById("vendorOrdersDisplay");if(!box)return;
+  const pendingCount=document.getElementById("vendorPendingCount");
+  if(pendingCount)pendingCount.textContent=String(vendorLiveOrders.length);
+  if(!vendorLiveOrders.length){box.className="ordersLiveState";box.innerHTML="No orders waiting<br><small>New orders will appear automatically.</small>";return}
+  box.className="";
+  box.innerHTML=vendorLiveOrders.slice(0,1).map(o=>{
+    const total=o._vendorItems.reduce((sum,i)=>sum+orderLineTotal(i,i._product),0);
+    const items=o._vendorItems.map(i=>{
+      const p=i._product||{},q=orderQty(i),unit=orderUnitPrice(i,p),line=orderLineTotal(i,p),img=orderImage(p)||orderImage(i),pack=orderPack(i,p);
+      return `<div class="vendorOrderItem"><div class="vendorOrderImageWrap"><div class="vendorOrderImage">${img?`<img src="${orderEsc(img)}" alt="${orderEsc(orderName(i,p))}">`:""}</div><div class="vendorOrderQtyBadge">×${orderEsc(q)}</div></div><div><div class="vendorOrderItemName">${orderEsc(orderName(i,p))}</div>${pack?`<div class="vendorOrderPack">${orderEsc(pack)}</div>`:""}</div><div class="vendorOrderPrice">₹${line.toFixed(2)}<span class="vendorOrderUnitPrice">₹${unit.toFixed(2)} each</span></div></div>`;
+    }).join("");
+    const time=o.created_at?new Date(o.created_at).toLocaleString():"";
+    return `<article class="vendorOrderCard"><div class="vendorOrderTop"><div><div class="vendorOrderNo">Order #${orderEsc(orderNumber(o))}</div><div class="vendorOrderTime">${orderEsc(time)}</div></div><div class="vendorPaymentChip">${orderEsc(o._payment)}</div></div>${items}<div class="vendorCustomerBox"><div class="vendorCustomerLabel">Customer details</div><div class="vendorCustomerName">${orderEsc(orderCustomerName(o))}</div>${orderCustomerMobile(o)?`<div class="vendorCustomerLine">📞 ${orderEsc(orderCustomerMobile(o))}</div>`:""}${orderCustomerAddress(o)?`<div class="vendorCustomerLine">📍 ${orderEsc(orderCustomerAddress(o))}</div>`:""}</div><div class="vendorBillBox"><div class="vendorBillRow total"><span>Total Bill</span><strong>₹${total.toFixed(2)}</strong></div><div class="vendorBillRow vendorPaymentModeRow"><span>Mode</span><strong>${o._payment === "UPI" ? "Paid using UPI" : "Cash on Delivery"}</strong></div>${vendorAcceptedOrderKeys.has(vendorLiveOrderKey(o))
+? `<div class="vendorPackSlider" data-source="${orderEsc(o._sourceTable)}" data-id="${orderEsc(o.id)}"><div class="vendorPackSliderTrack">Slide to Packed</div><button class="vendorPackSliderThumb" type="button" aria-label="Slide to mark packed">›</button></div>`
+: `<button class="vendorAcceptOrderBtn" type="button" onclick="acceptLiveVendorOrder('${orderEsc(vendorLiveOrderKey(o))}',this)">Accept the Order</button>`}</div></article>`;
+  }).join("");
+  setupVendorPackSliders();
+}
+async function loadLiveVendorOrders(){
+  if(!currentVendor||!vendorProductsCache.length){renderLiveVendorOrders();return}
+  const all=[];
+  for(const cfg of VENDOR_ORDER_TABLES){
+    const {data,error}=await sb.from(cfg.table).select("*").order("created_at",{ascending:false}).limit(100);
+    if(error){console.warn("Order load",cfg.table,error.message);continue}
+    (data||[]).forEach(row=>{const p=prepareLiveVendorOrder(row,cfg);if(p)all.push(p)})
+  }
+  vendorLiveOrders=all.sort((a,b)=>new Date(a.created_at||0)-new Date(b.created_at||0));renderLiveVendorOrders();
+}
+function stopVendorOrders(){vendorOrderChannels.forEach(ch=>{try{sb.removeChannel(ch)}catch(e){}});vendorOrderChannels=[];vendorLiveOrders=[]}
+async function startVendorOrders(){
+  stopVendorOrders();await loadLiveVendorOrders();
+  VENDOR_ORDER_TABLES.forEach(cfg=>{const ch=sb.channel(`vendor-orders-${cfg.table}-${currentVendor?.id||"x"}`).on("postgres_changes",{event:"*",schema:"public",table:cfg.table},payload=>{if(payload.eventType==="DELETE"){vendorLiveOrders=vendorLiveOrders.filter(o=>!(o._sourceTable===cfg.table&&String(o.id)===String(payload.old?.id)));renderLiveVendorOrders()}else upsertLiveVendorOrder(payload.new,cfg)}).subscribe();vendorOrderChannels.push(ch)})
+}
+async function insertPackedDelivery(order){
+  const payload={...order};
+  ["_sourceTable","_deliveryTable","_payment","_vendorItems","_product"].forEach(k=>delete payload[k]);
+  payload.vendor_id=currentVendor.id;
+  payload.items=order._vendorItems.map(i=>{const x={...i};delete x._product;return x});
+  for(let tries=0;tries<30;tries++){
+    const {error}=await sb.from(order._deliveryTable).insert(payload);
+    if(!error)return;
+    const msg=String(error.message||"");
+    const m=msg.match(/Could not find the '([^']+)' column|column ['\"]?([^'\" ]+)['\"]? .*schema cache/i);
+    const col=(m&&(m[1]||m[2]))||null;
+    if(error.code==="PGRST204"&&col&&Object.prototype.hasOwnProperty.call(payload,col)){delete payload[col];continue}
+    throw error;
+  }
+  throw new Error("Unable to match delivery table schema");
+}
+function setupVendorPackSliders(){
+  document.querySelectorAll(".vendorPackSlider").forEach(slider=>{
+    if(slider.dataset.ready==="1")return;
+    slider.dataset.ready="1";
+    const thumb=slider.querySelector(".vendorPackSliderThumb");
+    let dragging=false,startX=0,startLeft=0,max=0;
+    const pos=()=>{const tr=getComputedStyle(thumb).transform;if(!tr||tr==="none")return 0;const m=tr.match(/matrix\([^,]+,[^,]+,[^,]+,[^,]+,\s*([^,]+)/);return m?Number(m[1])||0:0};
+    const reset=()=>{thumb.style.transform="translateX(0px)";slider.classList.remove("dragging")};
+    thumb.addEventListener("pointerdown",e=>{if(slider.classList.contains("done"))return;dragging=true;slider.classList.add("dragging");thumb.setPointerCapture(e.pointerId);startX=e.clientX;startLeft=pos();max=Math.max(0,slider.clientWidth-thumb.offsetWidth-10);e.preventDefault()});
+    thumb.addEventListener("pointermove",e=>{if(!dragging)return;const x=Math.max(0,Math.min(max,startLeft+e.clientX-startX));thumb.style.transform=`translateX(${x}px)`});
+    const finish=async e=>{if(!dragging)return;dragging=false;const x=pos();if(x>=max*.82){thumb.style.transform=`translateX(${max}px)`;slider.classList.remove("dragging");slider.classList.add("done");slider.querySelector(".vendorPackSliderTrack").textContent="Packing...";await packLiveVendorOrder(slider.dataset.source,slider.dataset.id,thumb)}else reset()};
+    thumb.addEventListener("pointerup",finish);thumb.addEventListener("pointercancel",()=>{dragging=false;reset()});
+  });
+}
+
+window.packLiveVendorOrder=async function(sourceTable,id,btn){
+  const idx=vendorLiveOrders.findIndex(o=>o._sourceTable===sourceTable&&String(o.id)===String(id));if(idx<0)return;
+  const order=vendorLiveOrders[idx];btn.disabled=true;
+  try{
+    await insertPackedDelivery(order);
+    const {error:packedError}=await sb.from(order._sourceTable).update({order_status:"packed"}).eq("id",order.id);
+    if(packedError)throw packedError;
+    order.order_status="packed";
+    vendorAcceptedOrderKeys.delete(vendorLiveOrderKey(order));
+    vendorLiveOrders.splice(idx,1);
+    renderLiveVendorOrders();
+  }catch(e){
+    console.error("Pack order",e);btn.disabled=false;renderLiveVendorOrders();alert("Unable to mark packed. Please try again.");
+  }
+};
+
 /* =====================================
 
    BOTTOM NAV
@@ -5129,6 +5400,8 @@ document
 
 
 
+
+    stopVendorOrders();
 
     currentVendor =
 
