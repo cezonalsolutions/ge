@@ -3687,8 +3687,54 @@ let vendorProductsStockFilter = "all";
 
 
 
-function getVendorProductId(){
+function getVendorLoginId(){
   return currentVendor?.id ?? null;
+}
+
+function getVendorProductId(table=""){
+  // Main product tables are assigned using vendors.id.
+  // juttigastore was created/assigned using vendor_login.id, so preserve that mapping.
+  if(String(table||"").toLowerCase()==="juttigastore"){
+    return getVendorLoginId();
+  }
+  return currentVendor?._actual_vendor_id ?? null;
+}
+
+async function resolveActualVendorId(){
+  if(!currentVendor) return null;
+
+  const loginMobile=String(currentVendor.mobile||"")
+    .replace(/\D/g,"")
+    .slice(-10);
+
+  if(!loginMobile) return null;
+
+  try{
+    const {data,error}=await sb
+      .from("vendors")
+      .select("id,vendor_name,mobile")
+      .limit(200);
+
+    if(error) throw error;
+
+    const matched=(data||[]).find(v=>
+      String(v.mobile||"").replace(/\D/g,"").slice(-10)===loginMobile
+    );
+
+    currentVendor._actual_vendor_id=matched?.id ?? null;
+
+    console.log("CEZOO vendor mapping",{
+      login_id:currentVendor.id,
+      actual_vendor_id:currentVendor._actual_vendor_id,
+      mobile:loginMobile
+    });
+
+    return currentVendor._actual_vendor_id;
+  }catch(error){
+    console.error("Vendor mapping error:",error);
+    currentVendor._actual_vendor_id=null;
+    return null;
+  }
 }
 
 
@@ -3709,18 +3755,18 @@ function isVendorProductOutOfStock(product){
 
 async function fetchLoggedVendorProducts(){
 
-  const vendorId =
-    getVendorProductId();
-
-  if(vendorId == null){
-    return [];
-  }
-
   const jobs =
     PRODUCT_TABLES.map(
       async table => {
 
         try{
+
+          const vendorId=getVendorProductId(table);
+
+          if(vendorId == null){
+            console.warn("Vendor id not resolved for table:",table);
+            return [];
+          }
 
           const {
             data,
@@ -3898,7 +3944,7 @@ async function toggleVendorProductStock(
   const product = findVendorCachedProduct(table, productId);
   if(!product) return;
 
-  const vendorId = getVendorProductId();
+  const vendorId = getVendorProductId(table);
   if(vendorId == null) return;
 
   const wasOn = isVendorProductOn(product);
@@ -4786,8 +4832,10 @@ function openMainUI(vendor){
 
   ).textContent = location;
 
-  loadVendorProducts().then(()=>{
-    startVendorOrders();
+  resolveActualVendorId().then(()=>{
+    loadVendorProducts().then(()=>{
+      startVendorOrders();
+    });
   });
 
 
@@ -5424,14 +5472,14 @@ async function loadVendorStatusHistory(){
             ? productMap.get(orderProductKey(table,pid))
             : null;
 
-          if(product && String(product.vendor_id)===String(currentVendor.id)){
+          if(product && String(product.vendor_id)===String(getVendorProductId(product._table||""))){
             matchedItems.push({...item,_product:product});
           }
         }
 
         const sameVendorId=
           d.vendor_id!==null && d.vendor_id!==undefined &&
-          String(d.vendor_id)===String(currentVendor.id);
+          String(d.vendor_id)===String(getVendorProductId());
 
         const sameVendorMobile=
           String(d.vendor_mobile||"").replace(/\D/g,"").slice(-10) &&
@@ -5801,7 +5849,7 @@ async function autoSendToDelivery(order){
   payload.delivery_status="assigned";
   payload.delivery_boy_accepted=false;
 
-  payload.vendor_id=currentVendor.id;
+  payload.vendor_id=getVendorProductId();
   payload.vendor_name=currentVendor.vendor_name||currentVendor.name||"";
   payload.vendor_mobile=currentVendor.mobile||"";
   payload.vendor_packed_at=new Date().toISOString();
@@ -5822,7 +5870,7 @@ async function autoSendToDelivery(order){
       .from(deliveryTable)
       .select("id")
       .eq("source_order_id",String(order.id ?? order.order_id ?? ""))
-      .eq("vendor_id",currentVendor.id)
+      .eq("vendor_id",getVendorProductId())
       .limit(1);
 
     if(!check.error)existing=check.data;
@@ -5913,7 +5961,7 @@ window.packLiveVendorOrder=async function(sourceTable,id,btn){
     // Then original order -> packed, with compatibility retries.
     let result=await sb.from(sourceTable).update({
       order_status:"packed",
-      vendor_id:currentVendor.id,
+      vendor_id:getVendorProductId(),
       vendor_name:currentVendor.vendor_name||"",
       vendor_packed_at:packedAt,
       vendor_packed_id:`${currentVendor.id}-${id}`
