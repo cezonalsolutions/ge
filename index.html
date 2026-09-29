@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -5688,9 +5689,43 @@ function orderProductTable(i){return i?.product_table||i?.table||i?.source_table
 function orderProductId(i){return i?.product_id??i?.id??i?.productId??null}
 function orderQty(i){const n=Number(i?.quantity??i?.qty??i?.count??1);return Number.isFinite(n)&&n>0?n:1}
 function orderProductKey(t,id){return `${String(t)}__${String(id)}`}
-function orderProductMap(){const m=new Map();vendorProductsCache.forEach(p=>m.set(orderProductKey(p._table,p.id),p));return m}
+function orderProductMap(){
+  const m=new Map();
+  const byId=new Map();
+
+  vendorProductsCache.forEach(p=>{
+    m.set(orderProductKey(p._table,p.id),p);
+
+    const id=String(p?.id??"");
+    if(!id)return;
+
+    if(!byId.has(id)){
+      byId.set(id,p);
+    }else{
+      // Same id exists in more than one vendor table, so don't use an unsafe fallback.
+      byId.set(id,null);
+    }
+  });
+
+  m._byProductId=byId;
+  return m;
+}
 function orderImage(p){return p?.image1||p?.image||p?.image_url||p?.product_image||""}
-function orderName(i,p){return i?.product_name||i?.name||p?.product_name||p?.name||"Product"}
+function orderName(i,p){
+  return (
+    i?.product_name ||
+    i?.name ||
+    i?.title ||
+    i?.productName ||
+    i?.item_name ||
+    i?.itemName ||
+    p?.product_name ||
+    p?.name ||
+    p?.title ||
+    p?.productName ||
+    "Product"
+  );
+}
 function orderPack(i,p){
   const direct=i?.cake_weight||i?.weight||i?.pack||i?.size||i?.variant||"";
   if(direct)return String(direct);
