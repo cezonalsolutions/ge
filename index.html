@@ -5549,7 +5549,7 @@ function renderVendorPackedHistory(){
   });
 
   if(!filtered.length){
-    root.innerHTML=`<div class="vendorEmptyCover"><img class="vendorEmptyImage" src="log.png" alt=""></div>`;
+    root.innerHTML=`<div class="vendorEmptyCover"><img class="vendorEmptyImage" src="log.webp" alt=""></div>`;
     return;
   }
 
@@ -5734,7 +5734,7 @@ function renderLiveVendorOrders(){
   if(pendingCount)pendingCount.textContent=String(vendorLiveOrders.length);
   if(!vendorLiveOrders.length){
     box.className="ordersLiveState";
-    box.innerHTML=`<div class="vendorEmptyCover"><img class="vendorEmptyImage" src="log.png" alt=""></div>`;
+    box.innerHTML=`<div class="vendorEmptyCover"><img class="vendorEmptyImage" src="log.webp" alt=""></div>`;
     return
   }
   box.className="";
