@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
@@ -2245,6 +2244,39 @@ body.keyboard-open .loginTitle{
   height:auto;
   object-fit:contain;
 }
+
+.vendorProductsCategoryTitle{
+  margin:15px 2px 8px;
+  color:#29292f;
+  font-size:12px;
+  font-weight:900;
+}
+.vendorProductsCategories{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding:0 0 3px;
+  scrollbar-width:none;
+}
+.vendorProductsCategories::-webkit-scrollbar{display:none}
+.vendorProductsCategoryBtn{
+  flex:0 0 auto;
+  height:34px;
+  padding:0 14px;
+  border:1px solid #e8e8ed;
+  border-radius:999px;
+  background:#fff;
+  color:#777980;
+  font-size:11px;
+  font-weight:800;
+  cursor:pointer;
+}
+.vendorProductsCategoryBtn.active{
+  border-color:#685cff;
+  background:#f0efff;
+  color:#685cff;
+}
+
 </style>
 
 
@@ -2657,6 +2689,11 @@ body.keyboard-open .loginTitle{
               type="button"
               data-stock-filter="out"
             >Out of Stock</button>
+          </div>
+
+          <div class="vendorProductsCategoryTitle">Categories</div>
+          <div class="vendorProductsCategories" id="vendorProductsCategories">
+            <button class="vendorProductsCategoryBtn active" type="button" data-category="all">All</button>
           </div>
 
         </div>
@@ -3678,6 +3715,9 @@ const PRODUCT_TABLES = [
 const PRODUCTS_PAGE_SIZE = 12;
 
 let vendorProductsCache = [];
+let vendorProductsCategoryFilter = "all";
+let vendorProductsInitialLoadPromise = null;
+    renderVendorProductCategories();
 let vendorProductsVisibleCount = 0;
 let vendorProductsObserver = null;
 let vendorProductsLoadingMore = false;
@@ -3685,6 +3725,7 @@ let vendorProductsLoadingMore = false;
 let vendorProductsViewCache = [];
 let vendorProductsSearchQuery = "";
 let vendorProductsStockFilter = "all";
+
 
 
 
@@ -4383,6 +4424,19 @@ function getFilteredVendorProducts(){
         return false;
       }
 
+      if(vendorProductsCategoryFilter !== "all"){
+        const productCategories=String(product.category||"")
+          .split(",")
+          .map(v=>v.trim().toLowerCase())
+          .filter(Boolean);
+
+        if(!productCategories.includes(
+          String(vendorProductsCategoryFilter).trim().toLowerCase()
+        )){
+          return false;
+        }
+      }
+
       if(!query){
         return true;
       }
@@ -4393,6 +4447,10 @@ function getFilteredVendorProducts(){
           product.name,
           product.name_telugu,
           product.brand,
+          product.category,
+          product.category_name,
+          product.sub_category,
+          product.subcategory,
           product.id,
           product.quantity,
           product.unit
@@ -4420,7 +4478,73 @@ function refreshVendorProductsView(){
 }
 
 
+
+function renderVendorProductCategories(){
+  const root=document.getElementById("vendorProductsCategories");
+  if(!root)return;
+
+  const preferred=[
+    "Groceries","Daily Use","Cleaning","Biscuits","Powders","Shampoos",
+    "Oral Care","Dry Fruits","Cool Drinks","Snacks","Lays","Chocolates",
+    "Instant Foods","Stationary","Soaps","Personal Care","Baby Care",
+    "Pooja Items","Oils","Skincare","Brushes","Gifts","Pindi"
+  ];
+
+  const found=new Map();
+
+  vendorProductsCache.forEach(product=>{
+    // Categories are read from the real DB `category` column.
+    // This avoids guessing from product name/table.
+    String(product.category||"")
+      .split(",")
+      .map(v=>v.trim())
+      .filter(Boolean)
+      .forEach(cat=>{
+        const key=cat.toLowerCase();
+        if(!found.has(key))found.set(key,cat);
+      });
+  });
+
+  const ordered=[];
+  preferred.forEach(cat=>{
+    const real=found.get(cat.toLowerCase());
+    if(real){
+      ordered.push(real);
+      found.delete(cat.toLowerCase());
+    }
+  });
+  ordered.push(...[...found.values()].sort((a,b)=>a.localeCompare(b)));
+
+  // If the selected category no longer exists after login/reload, go back to All.
+  if(
+    vendorProductsCategoryFilter!=="all" &&
+    !ordered.some(c=>c.toLowerCase()===String(vendorProductsCategoryFilter).toLowerCase())
+  ){
+    vendorProductsCategoryFilter="all";
+  }
+
+  root.innerHTML=
+    `<button class="vendorProductsCategoryBtn ${vendorProductsCategoryFilter==="all"?"active":""}" type="button" data-category="all">All</button>`+
+    ordered.map(cat=>`
+      <button
+        class="vendorProductsCategoryBtn ${String(vendorProductsCategoryFilter).toLowerCase()===cat.toLowerCase()?"active":""}"
+        type="button"
+        data-category="${orderEsc(cat)}"
+      >${orderEsc(cat)}</button>
+    `).join("");
+
+  root.querySelectorAll(".vendorProductsCategoryBtn").forEach(button=>{
+    button.addEventListener("click",()=>{
+      vendorProductsCategoryFilter=button.dataset.category||"all";
+      root.querySelectorAll(".vendorProductsCategoryBtn")
+        .forEach(item=>item.classList.toggle("active",item===button));
+      refreshVendorProductsView();
+    });
+  });
+}
+
 function setupVendorProductsSearch(){
+  renderVendorProductCategories();
 
   const input =
     document.getElementById(
@@ -4514,6 +4638,7 @@ function setupVendorProductsSearch(){
         );
       }
     );
+
 }
 
 
@@ -4834,9 +4959,8 @@ function openMainUI(vendor){
   ).textContent = location;
 
   resolveActualVendorId().then(()=>{
-    loadVendorProducts().then(()=>{
-      startVendorOrders();
-    });
+    // Products are NOT preloaded. They load only when the Products tab is opened.
+    startVendorOrders();
   });
 
 
@@ -6076,6 +6200,29 @@ document.querySelectorAll(
 
 
 
+
+async function ensureVendorProductsLoaded(){
+  if(vendorProductsCache.length){
+    renderVendorProductCategories();
+    refreshVendorProductsView();
+    return vendorProductsCache;
+  }
+  if(vendorProductsInitialLoadPromise)return vendorProductsInitialLoadPromise;
+
+  vendorProductsInitialLoadPromise=(async()=>{
+    await resolveActualVendorId();
+    try{
+      await loadVendorProducts();
+      renderVendorProductCategories();
+      return vendorProductsCache;
+    }finally{
+      vendorProductsInitialLoadPromise=null;
+    }
+  })();
+
+  return vendorProductsInitialLoadPromise;
+}
+
 function openVendorPage(pageId){
 
   if(pageId==="statusPage"){
@@ -6135,6 +6282,12 @@ function openVendorPage(pageId){
 
 
 
+
+  if(pageId==="productsPage"){
+    ensureVendorProductsLoaded().catch(error=>{
+      console.error("Products lazy load:",error);
+    });
+  }
 }
 
 
