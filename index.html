@@ -1635,6 +1635,137 @@ body.keyboard-open .loginTitle{
   to{ transform:rotate(360deg); }
 }
 
+
+/* =====================================
+   VENDOR PRODUCT PRICE + INLINE EDIT
+===================================== */
+.vendorProductPriceBlock{
+  margin-top:8px;
+  padding-top:8px;
+  border-top:1px solid #f0f0f3;
+}
+
+.vendorProductPriceRow{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-top:4px;
+}
+
+.vendorProductPriceLabel{
+  color:#8d8d94;
+  font-size:10px;
+  font-weight:600;
+}
+
+.vendorProductPriceValue{
+  color:#171717;
+  font-size:13px;
+  font-weight:800;
+}
+
+.vendorProductPriceValue.discount{
+  color:#685cff;
+}
+
+.vendorProductEditBtn{
+  width:100%;
+  height:34px;
+  margin-top:9px;
+  border:0;
+  border-radius:10px;
+  background:#f0efff;
+  color:#685cff;
+  font-size:11px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.vendorProductEditBox{
+  margin-top:9px;
+  padding:9px;
+  background:#f8f8fb;
+  border-radius:11px;
+}
+
+.vendorProductEditField{
+  margin-bottom:8px;
+}
+
+.vendorProductEditField:last-of-type{
+  margin-bottom:0;
+}
+
+.vendorProductEditField label{
+  display:block;
+  margin-bottom:4px;
+  color:#8d8d94;
+  font-size:9px;
+  font-weight:700;
+}
+
+.vendorProductEditField input{
+  width:100%;
+  height:35px;
+  padding:0 10px;
+  border:1px solid #e1e1e7;
+  border-radius:9px;
+  outline:none;
+  background:#fff;
+  color:#171717;
+  font-size:12px;
+  font-weight:700;
+}
+
+.vendorProductEditField input:focus{
+  border-color:#685cff;
+}
+
+.vendorProductEditActions{
+  display:flex;
+  gap:7px;
+  margin-top:9px;
+}
+
+.vendorProductCancelBtn,
+.vendorProductSaveBtn{
+  flex:1;
+  height:34px;
+  border:0;
+  border-radius:9px;
+  font-size:11px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.vendorProductCancelBtn{
+  background:#ececf1;
+  color:#555;
+}
+
+.vendorProductSaveBtn{
+  background:#685cff;
+  color:#fff;
+}
+
+.vendorProductSaveBtn:disabled{
+  opacity:.6;
+}
+
+.vendorProductSaveStatus{
+  min-height:14px;
+  margin-top:6px;
+  text-align:center;
+  font-size:10px;
+  font-weight:700;
+  color:#24a15b;
+}
+
+.vendorProductSaveStatus.error{
+  color:#e54848;
+}
+
 </style>
 
 </head>
@@ -2905,8 +3036,6 @@ const PRODUCT_TABLES = [
 const PRODUCTS_PAGE_SIZE = 12;
 
 let vendorProductsCache = [];
-    vendorProductsVisibleCount = 0;
-    disconnectVendorProductsObserver();
 let vendorProductsVisibleCount = 0;
 let vendorProductsObserver = null;
 let vendorProductsLoadingMore = false;
@@ -3053,30 +3182,34 @@ function vendorProductCardHtml(product){
   const unit =
     product.unit ?? "";
 
-  const price =
-    product.discount_price ??
-    product.price ??
-    product.original_price ??
-    "";
-
   const original =
     product.original_price ?? "";
 
-  const oldPrice =
-    original !== "" &&
-    price !== "" &&
-    Number(original) > Number(price)
-      ? `<span class="vendorProductOldPrice">₹${escapeVendorHtml(original)}</span>`
-      : "";
+  const discount =
+    product.discount_price ??
+    product.price ??
+    "";
+
+  const table =
+    product._table || "";
+
+  const productId =
+    product.id ?? "";
+
+  const cardKey =
+    `${table}__${productId}`;
 
   return `
-    <article class="vendorProductCard">
+    <article
+      class="vendorProductCard"
+      data-product-key="${escapeVendorHtml(cardKey)}"
+    >
 
       <div class="vendorProductImage">
         ${
           image
-          ? `<img src="${escapeVendorHtml(image)}" alt="${escapeVendorHtml(name)}" loading="lazy">`
-          : ""
+            ? `<img src="${escapeVendorHtml(image)}" alt="${escapeVendorHtml(name)}" loading="lazy">`
+            : ""
         }
       </div>
 
@@ -3088,13 +3221,362 @@ function vendorProductCardHtml(product){
         ${escapeVendorHtml(quantity)} ${escapeVendorHtml(unit)}
       </div>
 
-      <div class="vendorProductPrice">
-        ${price !== "" ? "₹" + escapeVendorHtml(price) : ""}
-        ${oldPrice}
+      <div class="vendorProductPriceBlock">
+
+        <div class="vendorProductPriceRow">
+          <span class="vendorProductPriceLabel">Original Price</span>
+          <strong
+            class="vendorProductPriceValue"
+            data-price-type="original"
+          >
+            ${original !== "" ? "₹" + escapeVendorHtml(original) : "—"}
+          </strong>
+        </div>
+
+        <div class="vendorProductPriceRow">
+          <span class="vendorProductPriceLabel">Discount Price</span>
+          <strong
+            class="vendorProductPriceValue discount"
+            data-price-type="discount"
+          >
+            ${discount !== "" ? "₹" + escapeVendorHtml(discount) : "—"}
+          </strong>
+        </div>
+
+        <button
+          class="vendorProductEditBtn"
+          type="button"
+          onclick='openVendorPriceEditor(${JSON.stringify(String(table))}, ${JSON.stringify(String(productId))}, this)'
+        >
+          Edit Prices
+        </button>
+
       </div>
 
     </article>
   `;
+}
+
+
+function findVendorCachedProduct(table, productId){
+  return vendorProductsCache.find(
+    p =>
+      String(p._table) === String(table) &&
+      String(p.id) === String(productId)
+  ) || null;
+}
+
+
+function openVendorPriceEditor(table, productId, button){
+
+  const product =
+    findVendorCachedProduct(
+      table,
+      productId
+    );
+
+  if(!product || !button){
+    return;
+  }
+
+  const card =
+    button.closest(
+      ".vendorProductCard"
+    );
+
+  if(!card){
+    return;
+  }
+
+  /* Only one editor inside this card */
+  card
+    .querySelector(
+      ".vendorProductEditBox"
+    )
+    ?.remove();
+
+  const original =
+    product.original_price ?? "";
+
+  const discount =
+    product.discount_price ??
+    product.price ??
+    "";
+
+  const editor =
+    document.createElement("div");
+
+  editor.className =
+    "vendorProductEditBox";
+
+  editor.innerHTML = `
+    <div class="vendorProductEditField">
+      <label>Original Price</label>
+      <input
+        class="vendorOriginalPriceInput"
+        type="number"
+        inputmode="decimal"
+        min="0"
+        step="0.01"
+        value="${escapeVendorHtml(original)}"
+      >
+    </div>
+
+    <div class="vendorProductEditField">
+      <label>Discount Price</label>
+      <input
+        class="vendorDiscountPriceInput"
+        type="number"
+        inputmode="decimal"
+        min="0"
+        step="0.01"
+        value="${escapeVendorHtml(discount)}"
+      >
+    </div>
+
+    <div class="vendorProductEditActions">
+      <button
+        class="vendorProductCancelBtn"
+        type="button"
+      >
+        Cancel
+      </button>
+
+      <button
+        class="vendorProductSaveBtn"
+        type="button"
+      >
+        Save
+      </button>
+    </div>
+
+    <div class="vendorProductSaveStatus"></div>
+  `;
+
+  button.insertAdjacentElement(
+    "afterend",
+    editor
+  );
+
+  button.style.display =
+    "none";
+
+  const cancel =
+    editor.querySelector(
+      ".vendorProductCancelBtn"
+    );
+
+  const save =
+    editor.querySelector(
+      ".vendorProductSaveBtn"
+    );
+
+  cancel.addEventListener(
+    "click",
+    ()=>{
+      editor.remove();
+      button.style.display = "";
+    }
+  );
+
+  save.addEventListener(
+    "click",
+    ()=>{
+      saveVendorProductPrices(
+        table,
+        productId,
+        card,
+        editor,
+        button
+      );
+    }
+  );
+}
+
+
+async function saveVendorProductPrices(
+  table,
+  productId,
+  card,
+  editor,
+  editButton
+){
+
+  const originalInput =
+    editor.querySelector(
+      ".vendorOriginalPriceInput"
+    );
+
+  const discountInput =
+    editor.querySelector(
+      ".vendorDiscountPriceInput"
+    );
+
+  const saveButton =
+    editor.querySelector(
+      ".vendorProductSaveBtn"
+    );
+
+  const status =
+    editor.querySelector(
+      ".vendorProductSaveStatus"
+    );
+
+  const originalText =
+    String(
+      originalInput?.value ?? ""
+    ).trim();
+
+  const discountText =
+    String(
+      discountInput?.value ?? ""
+    ).trim();
+
+  if(
+    originalText === "" ||
+    discountText === ""
+  ){
+    status.textContent =
+      "Enter both prices";
+    status.className =
+      "vendorProductSaveStatus error";
+    return;
+  }
+
+  const original =
+    Number(originalText);
+
+  const discount =
+    Number(discountText);
+
+  if(
+    !Number.isFinite(original) ||
+    !Number.isFinite(discount) ||
+    original < 0 ||
+    discount < 0
+  ){
+    status.textContent =
+      "Enter valid prices";
+    status.className =
+      "vendorProductSaveStatus error";
+    return;
+  }
+
+  saveButton.disabled = true;
+  saveButton.textContent = "Saving...";
+  status.textContent = "";
+  status.className =
+    "vendorProductSaveStatus";
+
+  try{
+
+    /*
+      Security:
+      vendor_id condition prevents this UI
+      from updating another vendor's product.
+    */
+    const vendorId =
+      getVendorProductId();
+
+    if(vendorId == null){
+      throw new Error(
+        "Vendor session missing"
+      );
+    }
+
+    const {
+      data,
+      error
+    } =
+    await sb
+      .from(table)
+      .update({
+        original_price: original,
+        discount_price: discount
+      })
+      .eq(
+        "id",
+        productId
+      )
+      .eq(
+        "vendor_id",
+        vendorId
+      )
+      .select(
+        "id,original_price,discount_price"
+      )
+      .maybeSingle();
+
+    if(error){
+      throw error;
+    }
+
+    if(!data){
+      throw new Error(
+        "Price update not allowed"
+      );
+    }
+
+    /* Update local cache — NO PAGE REFRESH */
+    const product =
+      findVendorCachedProduct(
+        table,
+        productId
+      );
+
+    if(product){
+      product.original_price =
+        data.original_price;
+
+      product.discount_price =
+        data.discount_price;
+    }
+
+    /* Update only this card — NO BLINK */
+    const originalEl =
+      card.querySelector(
+        '[data-price-type="original"]'
+      );
+
+    const discountEl =
+      card.querySelector(
+        '[data-price-type="discount"]'
+      );
+
+    if(originalEl){
+      originalEl.textContent =
+        `₹${data.original_price}`;
+    }
+
+    if(discountEl){
+      discountEl.textContent =
+        `₹${data.discount_price}`;
+    }
+
+    status.textContent =
+      "Saved ✓";
+
+    setTimeout(()=>{
+      editor.remove();
+      editButton.style.display = "";
+    },450);
+
+  }catch(error){
+
+    console.error(
+      "Price update:",
+      error
+    );
+
+    status.textContent =
+      "Unable to save";
+
+    status.className =
+      "vendorProductSaveStatus error";
+
+    saveButton.disabled = false;
+    saveButton.textContent = "Save";
+  }
 }
 
 
@@ -3856,7 +4338,15 @@ async function(event){
 
 
 
+let appPreloaderHidden = false;
+
 function hideAppPreloader(){
+
+  if(appPreloaderHidden){
+    return;
+  }
+
+  appPreloaderHidden = true;
 
   const loader =
     document.getElementById("appPreloader");
@@ -3907,16 +4397,24 @@ async function restoreLogin(){
       data,
       error
     } =
-    await sb
-      .from(
-        "vendor_login"
+    await Promise.race([
+      sb
+        .from(
+          "vendor_login"
+        )
+        .select("*")
+        .eq(
+          "id",
+          id
+        )
+        .maybeSingle(),
+      new Promise((_, reject)=>
+        setTimeout(
+          ()=>reject(new Error("Session restore timeout")),
+          8000
+        )
       )
-      .select("*")
-      .eq(
-        "id",
-        id
-      )
-      .maybeSingle();
+    ]);
 
 
     if(error){
@@ -4238,6 +4736,18 @@ document
 );
 
 restoreLogin();
+
+/* Startup fail-safe: spinner must never stay forever */
+setTimeout(()=>{
+  const loader = document.getElementById("appPreloader");
+  if(loader && !loader.classList.contains("hide")){
+    if(!currentVendor){
+      loginPage.style.display = "block";
+      mainUI.style.display = "none";
+    }
+    hideAppPreloader();
+  }
+},10000);
 
 
 
