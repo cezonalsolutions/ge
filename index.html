@@ -3154,46 +3154,7 @@ function escapeVendorHtml(value){
 
 
 function isVendorProductOutOfStock(product){
-
-  if(product.in_stock === false){
-    return true;
-  }
-
-  if(
-    typeof product.stock === "number" &&
-    product.stock <= 0
-  ){
-    return true;
-  }
-
-  if(
-    typeof product.stock_quantity === "number" &&
-    product.stock_quantity <= 0
-  ){
-    return true;
-  }
-
-  if(
-    typeof product.available_quantity === "number" &&
-    product.available_quantity <= 0
-  ){
-    return true;
-  }
-
-  const status =
-    String(
-      product.stock_status ??
-      product.availability ??
-      ""
-    )
-    .trim()
-    .toLowerCase();
-
-  return [
-    "out of stock",
-    "out_of_stock",
-    "unavailable"
-  ].includes(status);
+  return !isVendorProductOn(product);
 }
 
 
@@ -3263,33 +3224,12 @@ async function fetchLoggedVendorProducts(){
 
 
 function isVendorProductOn(product){
-
-  if(product.in_stock !== undefined && product.in_stock !== null){
-    return product.in_stock !== false;
-  }
-
-  const status =
-    String(
-      product.stock_status ??
-      product.availability ??
-      product.status ??
-      ""
-    )
-    .trim()
-    .toLowerCase();
-
-  if([
-    "off",
-    "inactive",
-    "out of stock",
-    "out_of_stock",
-    "unavailable",
-    "closed"
-  ].includes(status)){
-    return false;
-  }
-
-  return true;
+  return !(
+    product.stock === false ||
+    product.stock === 0 ||
+    String(product.stock).toLowerCase() === "false" ||
+    String(product.stock).toLowerCase() === "no"
+  );
 }
 
 
@@ -3404,142 +3344,48 @@ async function toggleVendorProductStock(
   productId,
   button
 ){
+  if(!button || button.classList.contains("saving")) return;
 
-  if(!button || button.classList.contains("saving")){
-    return;
-  }
+  const product = findVendorCachedProduct(table, productId);
+  if(!product) return;
 
-  const product =
-    findVendorCachedProduct(
-      table,
-      productId
-    );
+  const vendorId = getVendorProductId();
+  if(vendorId == null) return;
 
-  if(!product){
-    return;
-  }
-
-  const vendorId =
-    getVendorProductId();
-
-  if(vendorId == null){
-    return;
-  }
-
-  const wasOn =
-    button.classList.contains("on");
-
-  const nextOn =
-    !wasOn;
+  const wasOn = isVendorProductOn(product);
+  const nextOn = !wasOn;
+  const oldStock = product.stock;
 
   button.classList.add("saving");
+  product.stock = nextOn;
+  button.classList.toggle("on", nextOn);
 
-  /*
-    UI changes immediately.
-    If Supabase rejects update, it rolls back.
-  */
-  button.classList.toggle(
-    "on",
-    nextOn
-  );
-
-  const text =
-    button.querySelector(
-      ".vendorProductStockToggleText"
-    );
-
-  if(text){
-    text.textContent =
-      nextOn ? "ON" : "OFF";
-  }
-
-  button.setAttribute(
-    "aria-label",
-    nextOn
-      ? "Turn product off"
-      : "Turn product on"
-  );
+  const text = button.querySelector(".vendorProductStockToggleText");
+  if(text) text.textContent = nextOn ? "ON" : "OFF";
 
   try{
-
-    /*
-      Current product tables are already vendor-filtered.
-      Use in_stock boolean for ON/OFF state.
-    */
-    const {
-      data,
-      error
-    } =
-    await sb
+    const { data, error } = await sb
       .from(table)
-      .update({
-        in_stock: nextOn
-      })
-      .eq(
-        "id",
-        productId
-      )
-      .eq(
-        "vendor_id",
-        vendorId
-      )
-      .select(
-        "id,in_stock"
-      )
+      .update({ stock: nextOn })
+      .eq("id", productId)
+      .eq("vendor_id", vendorId)
+      .select("id,stock")
       .maybeSingle();
 
-    if(error){
-      throw error;
-    }
+    if(error) throw error;
+    if(!data) throw new Error("Stock update not allowed");
 
-    if(!data){
-      throw new Error(
-        "Stock update not allowed"
-      );
-    }
-
-    /* Local cache only — no refresh / no blink */
-    product.in_stock =
-      data.in_stock;
-
-    updateProfileProductStats(
-      vendorProductsCache
-    );
-
+    product.stock = data.stock;
+    updateProfileProductStats(vendorProductsCache);
   }catch(error){
-
-    console.error(
-      "Product ON/OFF update:",
-      error
-    );
-
-    /* Roll back visual state */
-    button.classList.toggle(
-      "on",
-      wasOn
-    );
-
-    if(text){
-      text.textContent =
-        wasOn ? "ON" : "OFF";
-    }
-
-    button.setAttribute(
-      "aria-label",
-      wasOn
-        ? "Turn product off"
-        : "Turn product on"
-    );
-
+    console.error("Product ON/OFF update:", error);
+    product.stock = oldStock;
+    button.classList.toggle("on", wasOn);
+    if(text) text.textContent = wasOn ? "ON" : "OFF";
   }finally{
-
-    button.classList.remove(
-      "saving"
-    );
-
+    button.classList.remove("saving");
   }
 }
-
 
 function findVendorCachedProduct(table, productId){
   return vendorProductsCache.find(
