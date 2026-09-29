@@ -1759,11 +1759,108 @@ body.keyboard-open .loginTitle{
   text-align:center;
   font-size:10px;
   font-weight:700;
-  color:#24a15b;
+  color:#e54848;
 }
 
-.vendorProductSaveStatus.error{
-  color:#e54848;
+.vendorProductSaveStatus:empty{
+  display:none;
+}
+
+.vendorProductSaveBtn.saved{
+  background:#24a15b;
+}
+
+.vendorProductSaveBtn .saveTick{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:17px;
+  line-height:1;
+  font-weight:900;
+}
+
+
+/* =====================================
+   PRODUCT IMAGE — ON / OFF TOGGLE
+===================================== */
+.vendorProductImage{
+  position:relative;
+}
+
+.vendorProductStockToggle{
+  position:absolute;
+  top:8px;
+  right:8px;
+  z-index:4;
+
+  width:50px;
+  height:25px;
+  padding:0;
+
+  border:0;
+  border-radius:999px;
+
+  background:#dedee4;
+
+  display:flex;
+  align-items:center;
+
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+
+  box-shadow:0 2px 7px rgba(0,0,0,.10);
+  transition:background .18s ease, opacity .18s ease;
+}
+
+.vendorProductStockToggle::before{
+  content:"";
+  position:absolute;
+
+  left:3px;
+  top:3px;
+
+  width:19px;
+  height:19px;
+
+  border-radius:50%;
+  background:#fff;
+
+  box-shadow:0 1px 4px rgba(0,0,0,.18);
+
+  transition:transform .18s ease;
+}
+
+.vendorProductStockToggle.on{
+  background:#28b463;
+}
+
+.vendorProductStockToggle.on::before{
+  transform:translateX(25px);
+}
+
+.vendorProductStockToggleText{
+  position:absolute;
+  left:24px;
+  right:3px;
+
+  color:#666;
+  font-size:8px;
+  font-weight:900;
+  text-align:center;
+  line-height:25px;
+
+  pointer-events:none;
+}
+
+.vendorProductStockToggle.on .vendorProductStockToggleText{
+  left:3px;
+  right:24px;
+  color:#fff;
+}
+
+.vendorProductStockToggle.saving{
+  opacity:.55;
+  pointer-events:none;
 }
 
 </style>
@@ -3164,6 +3261,38 @@ async function fetchLoggedVendorProducts(){
 }
 
 
+
+function isVendorProductOn(product){
+
+  if(product.in_stock !== undefined && product.in_stock !== null){
+    return product.in_stock !== false;
+  }
+
+  const status =
+    String(
+      product.stock_status ??
+      product.availability ??
+      product.status ??
+      ""
+    )
+    .trim()
+    .toLowerCase();
+
+  if([
+    "off",
+    "inactive",
+    "out of stock",
+    "out_of_stock",
+    "unavailable",
+    "closed"
+  ].includes(status)){
+    return false;
+  }
+
+  return true;
+}
+
+
 function vendorProductCardHtml(product){
 
   const name =
@@ -3211,6 +3340,17 @@ function vendorProductCardHtml(product){
             ? `<img src="${escapeVendorHtml(image)}" alt="${escapeVendorHtml(name)}" loading="lazy">`
             : ""
         }
+
+        <button
+          class="vendorProductStockToggle ${isVendorProductOn(product) ? "on" : ""}"
+          type="button"
+          aria-label="${isVendorProductOn(product) ? "Turn product off" : "Turn product on"}"
+          onclick='toggleVendorProductStock(${JSON.stringify(String(table))}, ${JSON.stringify(String(productId))}, this)'
+        >
+          <span class="vendorProductStockToggleText">
+            ${isVendorProductOn(product) ? "ON" : "OFF"}
+          </span>
+        </button>
       </div>
 
       <div class="vendorProductName">
@@ -3255,6 +3395,149 @@ function vendorProductCardHtml(product){
 
     </article>
   `;
+}
+
+
+
+async function toggleVendorProductStock(
+  table,
+  productId,
+  button
+){
+
+  if(!button || button.classList.contains("saving")){
+    return;
+  }
+
+  const product =
+    findVendorCachedProduct(
+      table,
+      productId
+    );
+
+  if(!product){
+    return;
+  }
+
+  const vendorId =
+    getVendorProductId();
+
+  if(vendorId == null){
+    return;
+  }
+
+  const wasOn =
+    button.classList.contains("on");
+
+  const nextOn =
+    !wasOn;
+
+  button.classList.add("saving");
+
+  /*
+    UI changes immediately.
+    If Supabase rejects update, it rolls back.
+  */
+  button.classList.toggle(
+    "on",
+    nextOn
+  );
+
+  const text =
+    button.querySelector(
+      ".vendorProductStockToggleText"
+    );
+
+  if(text){
+    text.textContent =
+      nextOn ? "ON" : "OFF";
+  }
+
+  button.setAttribute(
+    "aria-label",
+    nextOn
+      ? "Turn product off"
+      : "Turn product on"
+  );
+
+  try{
+
+    /*
+      Current product tables are already vendor-filtered.
+      Use in_stock boolean for ON/OFF state.
+    */
+    const {
+      data,
+      error
+    } =
+    await sb
+      .from(table)
+      .update({
+        in_stock: nextOn
+      })
+      .eq(
+        "id",
+        productId
+      )
+      .eq(
+        "vendor_id",
+        vendorId
+      )
+      .select(
+        "id,in_stock"
+      )
+      .maybeSingle();
+
+    if(error){
+      throw error;
+    }
+
+    if(!data){
+      throw new Error(
+        "Stock update not allowed"
+      );
+    }
+
+    /* Local cache only — no refresh / no blink */
+    product.in_stock =
+      data.in_stock;
+
+    updateProfileProductStats(
+      vendorProductsCache
+    );
+
+  }catch(error){
+
+    console.error(
+      "Product ON/OFF update:",
+      error
+    );
+
+    /* Roll back visual state */
+    button.classList.toggle(
+      "on",
+      wasOn
+    );
+
+    if(text){
+      text.textContent =
+        wasOn ? "ON" : "OFF";
+    }
+
+    button.setAttribute(
+      "aria-label",
+      wasOn
+        ? "Turn product off"
+        : "Turn product on"
+    );
+
+  }finally{
+
+    button.classList.remove(
+      "saving"
+    );
+
+  }
 }
 
 
@@ -3553,13 +3836,16 @@ async function saveVendorProductPrices(
         `₹${data.discount_price}`;
     }
 
-    status.textContent =
-      "Saved ✓";
+    status.textContent = "";
+
+    saveButton.classList.add("saved");
+    saveButton.innerHTML =
+      '<span class="saveTick">✓</span>';
 
     setTimeout(()=>{
       editor.remove();
       editButton.style.display = "";
-    },450);
+    },550);
 
   }catch(error){
 
