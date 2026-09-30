@@ -192,10 +192,11 @@ body{
   min-height:calc(100vh - 85px);
   min-height:calc(100dvh - 85px);
 
+  /* bottom space for fixed button */
   padding:
     18px
     18px
-    calc(40px + env(safe-area-inset-bottom));
+    125px;
 
   overflow:hidden;
 }
@@ -305,6 +306,7 @@ body{
 
 .addressForm{
   width:100%;
+
   margin-top:38px;
 }
 
@@ -333,8 +335,6 @@ body{
 
   font-size:13px;
   font-weight:700;
-
-  letter-spacing:0;
 }
 
 
@@ -346,15 +346,11 @@ body{
   width:100%;
   height:32px;
 
-  padding:
-    0
-    1px
-    8px;
+  padding:0 1px 8px;
 
   border:none;
 
-  border-bottom:
-    1.4px solid #d7d9de;
+  border-bottom:1.4px solid #d7d9de;
 
   border-radius:0;
 
@@ -373,16 +369,10 @@ body{
   -webkit-appearance:none;
 }
 
-
-/* PLACEHOLDER */
-
 .lineField input::placeholder{
   color:#a9adb4;
   font-weight:500;
 }
-
-
-/* FOCUS */
 
 .lineField input:focus{
   border-bottom-color:#5b5bd6;
@@ -408,6 +398,83 @@ body{
 
 
 /* =========================
+   FIXED SAVE AREA
+========================= */
+
+.saveAddressBar{
+  position:fixed;
+
+  left:0;
+  right:0;
+  bottom:0;
+
+  width:100%;
+
+  z-index:100;
+
+  padding:
+    12px
+    18px
+    calc(12px + env(safe-area-inset-bottom));
+
+  background:
+    rgba(255,255,255,.96);
+
+  border-top:1px solid #eeeeF2;
+
+  box-shadow:
+    0 -8px 24px rgba(0,0,0,.06);
+}
+
+
+/* SAVE BUTTON */
+
+.saveAddressBtn{
+  width:100%;
+  height:54px;
+
+  border:none;
+  outline:none;
+
+  border-radius:14px;
+
+  background:#5b5bd6;
+
+  color:#ffffff;
+
+  font-family:inherit;
+
+  font-size:16px;
+  font-weight:800;
+
+  letter-spacing:-0.2px;
+
+  cursor:pointer;
+}
+
+
+/* BUTTON PRESS */
+
+.saveAddressBtn:active{
+  transform:scale(.99);
+}
+
+
+/* =========================
+   DESKTOP SAVE WIDTH
+========================= */
+
+@media(min-width:700px){
+
+  .saveAddressBar{
+    padding-left:24px;
+    padding-right:24px;
+  }
+
+}
+
+
+/* =========================
    MOBILE
 ========================= */
 
@@ -418,7 +485,6 @@ body{
   .page{
     width:100%;
     max-width:100%;
-
     overflow-x:hidden;
   }
 
@@ -468,6 +534,9 @@ body{
     padding-top:18px;
     padding-left:18px;
     padding-right:18px;
+
+    /* save button cover kakunda */
+    padding-bottom:125px;
   }
 
 
@@ -521,6 +590,21 @@ body{
 
   .twoFields{
     gap:18px;
+  }
+
+
+  .saveAddressBar{
+    padding-left:16px;
+    padding-right:16px;
+  }
+
+
+  .saveAddressBtn{
+    height:54px;
+
+    border-radius:14px;
+
+    font-size:16px;
   }
 
 }
@@ -663,7 +747,7 @@ body{
           </div>
 
 
-          <!-- BUILDING NAME -->
+          <!-- BUILDING -->
 
           <div class="lineField">
 
@@ -679,7 +763,7 @@ body{
           </div>
 
 
-          <!-- APARTMENT NAME -->
+          <!-- APARTMENT -->
 
           <div class="lineField">
 
@@ -695,7 +779,7 @@ body{
           </div>
 
 
-          <!-- ROAD / STREET -->
+          <!-- ROAD -->
 
           <div class="lineField">
 
@@ -711,7 +795,7 @@ body{
           </div>
 
 
-          <!-- VILLAGE / AREA -->
+          <!-- VILLAGE -->
 
           <div class="lineField">
 
@@ -727,7 +811,7 @@ body{
           </div>
 
 
-          <!-- TOWN + PIN -->
+          <!-- CITY + PIN -->
 
           <div class="twoFields">
 
@@ -806,6 +890,23 @@ body{
   </div>
 
 </div>
+
+
+<!-- =========================
+     FIXED SAVE ADDRESS
+========================= -->
+
+<div class="saveAddressBar">
+
+  <button
+    class="saveAddressBtn"
+    type="button"
+  >
+    Save Address
+  </button>
+
+</div>
+
 
 </body>
 </html>
