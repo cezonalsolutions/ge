@@ -201,7 +201,7 @@ body{
 
 
 /* =========================
-   DESKTOP HEADING
+   HEADING
 ========================= */
 
 .addressHeading h1{
@@ -230,11 +230,6 @@ body{
   display:block;
   white-space:nowrap;
 }
-
-
-/* =========================
-   MOBILE HEADING
-========================= */
 
 .mobileHeading{
   display:none;
@@ -283,11 +278,24 @@ body{
 
   color:#34363b;
 
+  font-family:inherit;
+
   font-size:15px;
   font-weight:700;
+
+  cursor:pointer;
+  outline:none;
+
+  transition:
+    background .18s ease,
+    border-color .18s ease,
+    color .18s ease;
 }
 
-.orderTypeBox.me{
+
+/* SELECTED */
+
+.orderTypeBox.active{
   border-color:#5b5bd6;
 
   background:#f3f3ff;
@@ -309,7 +317,7 @@ body{
 
 
 /* =========================
-   LINE FIELD
+   NORMAL LINE FIELD
 ========================= */
 
 .lineField{
@@ -340,7 +348,10 @@ body{
   padding:0 1px 8px;
 
   border:none;
-  border-bottom:1.4px solid #d7d9de;
+
+  border-bottom:
+    1.4px solid #d7d9de;
+
   border-radius:0;
 
   outline:none;
@@ -387,40 +398,285 @@ body{
 
 
 /* =========================
-   RECEIVED ADDRESS
+   SMALL MAP + EMPTY LINE
 ========================= */
 
-.receivedAddress{
+.mapAddressRow{
   width:100%;
 
-  margin-top:-2px;
-  margin-bottom:27px;
+  display:flex;
+  align-items:center;
 
-  padding-bottom:12px;
+  gap:14px;
 
-  border-bottom:1.4px solid #d7d9de;
+  margin-top:0;
+  margin-bottom:28px;
 }
 
-.receivedAddressTitle{
+
+/* =========================
+   SMALL MAP
+========================= */
+
+.smallMapBox{
+  position:relative;
+
+  width:76px;
+  height:62px;
+
+  flex:0 0 76px;
+
+  overflow:hidden;
+
+  border:1px solid #dfe2e7;
+  border-radius:12px;
+
+  background:
+
+    linear-gradient(
+      35deg,
+      transparent 44%,
+      rgba(255,255,255,.96) 45%,
+      rgba(255,255,255,.96) 51%,
+      transparent 52%
+    ),
+
+    linear-gradient(
+      145deg,
+      transparent 45%,
+      rgba(255,255,255,.95) 46%,
+      rgba(255,255,255,.95) 51%,
+      transparent 52%
+    ),
+
+    #e8edf0;
+
+  box-shadow:
+    0 3px 10px rgba(0,0,0,.04);
+}
+
+
+/* MAP AREAS */
+
+.smallMapBox::before{
+  content:"";
+
+  position:absolute;
+
+  width:28px;
+  height:19px;
+
+  top:6px;
+  left:6px;
+
+  border-radius:5px;
+
+  background:#dce9dc;
+
+  transform:rotate(-5deg);
+}
+
+.smallMapBox::after{
+  content:"";
+
+  position:absolute;
+
+  width:30px;
+  height:18px;
+
+  right:5px;
+  bottom:5px;
+
+  border-radius:5px;
+
+  background:#dde8dd;
+
+  transform:rotate(4deg);
+}
+
+
+/* =========================
+   MAP ROADS
+========================= */
+
+.smallRoad{
+  position:absolute;
+
+  z-index:2;
+
+  background:#ffffff;
+
+  box-shadow:
+    0 0 0 1px rgba(210,214,218,.55);
+}
+
+.roadOne{
+  width:105px;
+  height:9px;
+
+  left:-13px;
+  top:27px;
+
+  transform:rotate(-9deg);
+}
+
+.roadTwo{
+  width:9px;
+  height:90px;
+
+  left:34px;
+  top:-14px;
+
+  transform:rotate(17deg);
+}
+
+
+/* =========================
+   MAP PIN
+========================= */
+
+.smallMapPin{
+  position:absolute;
+
+  z-index:10;
+
+  left:50%;
+  top:50%;
+
+  width:29px;
+  height:29px;
+
+  transform:
+    translate(-50%,-62%);
+
+  filter:
+    drop-shadow(
+      0 3px 3px rgba(0,0,0,.20)
+    );
+}
+
+.smallMapPin svg{
   display:block;
 
-  margin-bottom:8px;
+  width:100%;
+  height:100%;
 
-  color:#50535a;
-
-  font-size:13px;
-  font-weight:700;
+  fill:#5b5bd6;
 }
 
-.receivedAddressText{
-  margin:0;
 
-  color:#777b82;
+/* =========================
+   MAP ADDRESS LINE
+========================= */
+
+.mapAddressLine{
+  flex:1;
+
+  min-width:0;
+
+  display:flex;
+  align-items:flex-end;
+}
+
+.mapAddressLine input{
+  display:block;
+
+  width:100%;
+  height:38px;
+
+  padding:
+    0
+    1px
+    7px;
+
+  border:none;
+
+  border-bottom:
+    1.4px solid #d7d9de;
+
+  border-radius:0;
+
+  outline:none;
+
+  background:transparent;
+
+  color:#1e2024;
+
+  font-family:inherit;
+
+  font-size:16px;
+  font-weight:600;
+
+  appearance:none;
+  -webkit-appearance:none;
+}
+
+.mapAddressLine input:focus{
+  border-bottom-color:#5b5bd6;
+}
+
+
+/* =========================
+   LAST ANY INSTRUCTIONS
+========================= */
+
+.instructionsWrap{
+  display:none;
+
+  width:100%;
+
+  margin-top:2px;
+  margin-bottom:14px;
+}
+
+
+/* FRIEND / PARENTS */
+
+.instructionsWrap.show{
+  display:block;
+}
+
+
+.instructionsWrap textarea{
+  display:block;
+
+  width:100%;
+  height:78px;
+
+  padding:13px 14px;
+
+  resize:none;
+
+  outline:none;
+
+  border:
+    1.4px solid #dedfe5;
+
+  border-radius:13px;
+
+  background:#fafafd;
+
+  color:#1e2024;
+
+  font-family:inherit;
 
   font-size:14px;
-  font-weight:550;
+  font-weight:500;
 
-  line-height:1.45;
+  line-height:1.4;
+}
+
+
+.instructionsWrap textarea::placeholder{
+  color:#969aa2;
+  opacity:1;
+}
+
+
+.instructionsWrap textarea:focus{
+  border-color:#5b5bd6;
+
+  background:#ffffff;
 }
 
 
@@ -444,13 +700,20 @@ body{
     18px
     calc(12px + env(safe-area-inset-bottom));
 
-  background:rgba(255,255,255,.96);
+  background:
+    rgba(255,255,255,.96);
 
-  border-top:1px solid #eeeef2;
+  border-top:
+    1px solid #eeeef2;
 
   box-shadow:
     0 -8px 24px rgba(0,0,0,.06);
 }
+
+
+/* =========================
+   SAVE BUTTON
+========================= */
 
 .saveAddressBtn{
   width:100%;
@@ -469,6 +732,8 @@ body{
 
   font-size:16px;
   font-weight:800;
+
+  letter-spacing:-0.2px;
 
   cursor:pointer;
 }
@@ -489,12 +754,15 @@ body{
   .page{
     width:100%;
     max-width:100%;
+
     overflow-x:hidden;
   }
+
 
   .desktopHeading{
     display:none;
   }
+
 
   .mobileHeading{
     display:block;
@@ -510,6 +778,17 @@ body{
     white-space:nowrap;
   }
 
+
+  .orderingText{
+    font-weight:900;
+  }
+
+
+  .forText{
+    font-weight:600;
+  }
+
+
   .tataImage{
     top:-88px;
     right:14px;
@@ -520,17 +799,22 @@ body{
     transform:rotate(19deg);
   }
 
+
   .content{
     padding-top:18px;
     padding-left:18px;
     padding-right:18px;
+
     padding-bottom:125px;
   }
 
+
   .orderTypeRow{
     gap:8px;
+
     margin-top:34px;
   }
+
 
   .orderTypeBox{
     height:52px;
@@ -540,48 +824,101 @@ body{
     font-size:14px;
   }
 
+
   .addressForm{
     margin-top:38px;
   }
+
 
   .lineField{
     margin-bottom:25px;
   }
 
+
   .lineField label{
     margin-bottom:6px;
 
     font-size:13px;
-    font-weight:700;
   }
+
 
   .lineField input{
     height:31px;
 
     font-size:16px;
-    font-weight:600;
   }
+
 
   .twoFields{
     gap:18px;
   }
 
-  .receivedAddress{
-    margin-bottom:25px;
+
+  /* MAP */
+
+  .mapAddressRow{
+    gap:13px;
+
+    margin-bottom:26px;
   }
 
-  .receivedAddressTitle{
-    font-size:13px;
-    font-weight:700;
+
+  .smallMapBox{
+    width:72px;
+    height:60px;
+
+    flex:0 0 72px;
+
+    border-radius:11px;
   }
 
-  .receivedAddressText{
+
+  .smallMapPin{
+    width:28px;
+    height:28px;
+  }
+
+
+  .mapAddressLine input{
+    height:36px;
+
+    font-size:16px;
+  }
+
+
+  /* INSTRUCTIONS */
+
+  .instructionsWrap{
+    margin-top:1px;
+    margin-bottom:12px;
+  }
+
+
+  .instructionsWrap textarea{
+    height:76px;
+
+    padding:12px 13px;
+
+    border-radius:12px;
+
     font-size:14px;
   }
+
+
+  /* SAVE */
 
   .saveAddressBar{
     padding-left:16px;
     padding-right:16px;
+  }
+
+
+  .saveAddressBtn{
+    height:54px;
+
+    border-radius:14px;
+
+    font-size:16px;
   }
 
 }
@@ -591,6 +928,7 @@ body{
 
 
 <body>
+
 
 <div class="page">
 
@@ -604,16 +942,19 @@ body{
       <div class="content">
 
 
-        <!-- HEADING -->
+        <!-- =========================
+             HEADING
+        ========================== -->
 
         <div class="addressHeading">
 
 
-          <!-- PC -->
+          <!-- DESKTOP -->
 
           <h1 class="desktopHeading">
 
             <span class="desktopLine">
+
               Help us know your
 
               <span class="addressColor">
@@ -647,26 +988,46 @@ body{
         </div>
 
 
-        <!-- FRIEND / PARENTS / ME -->
+        <!-- =========================
+             FRIEND / PARENTS / ME
+        ========================== -->
 
         <div class="orderTypeRow">
 
-          <div class="orderTypeBox">
+
+          <button
+            class="orderTypeBox"
+            type="button"
+            data-type="friend"
+          >
             Friend
-          </div>
+          </button>
 
-          <div class="orderTypeBox">
+
+          <button
+            class="orderTypeBox"
+            type="button"
+            data-type="parents"
+          >
             Parents
-          </div>
+          </button>
 
-          <div class="orderTypeBox me">
+
+          <button
+            class="orderTypeBox active"
+            type="button"
+            data-type="me"
+          >
             Me
-          </div>
+          </button>
+
 
         </div>
 
 
-        <!-- ADDRESS FORM -->
+        <!-- =========================
+             ADDRESS FORM
+        ========================== -->
 
         <div class="addressForm">
 
@@ -691,6 +1052,7 @@ body{
           <!-- DOOR + ROOM -->
 
           <div class="twoFields">
+
 
             <div class="lineField">
 
@@ -719,10 +1081,11 @@ body{
 
             </div>
 
+
           </div>
 
 
-          <!-- BUILDING NAME -->
+          <!-- BUILDING -->
 
           <div class="lineField">
 
@@ -738,20 +1101,64 @@ body{
           </div>
 
 
-          <!-- =====================
-               RECEIVED ADDRESS
-               NO INPUT HERE
-          ====================== -->
+          <!-- =========================
+               SMALL MAP + EMPTY LINE
+          ========================== -->
 
-          <div class="receivedAddress">
+          <div class="mapAddressRow">
 
-            <span class="receivedAddressTitle">
-              Received Address
-            </span>
 
-            <p class="receivedAddressText">
-              Address will appear here
-            </p>
+            <!-- SMALL MAP -->
+
+            <div class="smallMapBox">
+
+
+              <div class="smallRoad roadOne"></div>
+
+              <div class="smallRoad roadTwo"></div>
+
+
+              <div class="smallMapPin">
+
+                <svg viewBox="0 0 24 24">
+
+                  <path
+                    d="
+                    M12 2
+                    C8.13 2 5 5.13 5 9
+                    C5 14.25 12 22 12 22
+                    S19 14.25 19 9
+                    C19 5.13 15.87 2 12 2
+                    Z
+                    "
+                  />
+
+                  <circle
+                    cx="12"
+                    cy="9"
+                    r="2.5"
+                    fill="#ffffff"
+                  />
+
+                </svg>
+
+              </div>
+
+
+            </div>
+
+
+            <!-- ONLY LINE -->
+
+            <div class="mapAddressLine">
+
+              <input
+                type="text"
+                aria-label="Address"
+              >
+
+            </div>
+
 
           </div>
 
@@ -808,6 +1215,7 @@ body{
 
           <div class="twoFields">
 
+
             <div class="lineField">
 
               <label>
@@ -837,6 +1245,7 @@ body{
 
             </div>
 
+
           </div>
 
 
@@ -856,7 +1265,26 @@ body{
           </div>
 
 
+          <!-- =========================
+               ANY INSTRUCTIONS
+               LAST FIELD
+          ========================== -->
+
+          <div
+            class="instructionsWrap"
+            id="instructionsWrap"
+          >
+
+            <textarea
+              id="instructions"
+              placeholder="Any Instructions"
+            ></textarea>
+
+          </div>
+
+
         </div>
+
 
       </div>
 
@@ -882,7 +1310,9 @@ body{
 </div>
 
 
-<!-- FIXED SAVE ADDRESS -->
+<!-- =========================
+     FIXED SAVE ADDRESS
+========================= -->
 
 <div class="saveAddressBar">
 
@@ -894,6 +1324,68 @@ body{
   </button>
 
 </div>
+
+
+<script>
+
+/* =========================
+   FRIEND / PARENTS / ME
+========================= */
+
+const orderTypeButtons =
+  document.querySelectorAll(".orderTypeBox");
+
+const instructionsWrap =
+  document.getElementById("instructionsWrap");
+
+const instructions =
+  document.getElementById("instructions");
+
+
+orderTypeButtons.forEach((button) => {
+
+  button.addEventListener("click", () => {
+
+
+    orderTypeButtons.forEach((item) => {
+      item.classList.remove("active");
+    });
+
+
+    button.classList.add("active");
+
+
+    const selectedType =
+      button.dataset.type;
+
+
+    /* FRIEND / PARENTS */
+
+    if(
+      selectedType === "friend" ||
+      selectedType === "parents"
+    ){
+
+      instructionsWrap.classList.add("show");
+
+    }
+
+
+    /* ME = HIDE */
+
+    else{
+
+      instructionsWrap.classList.remove("show");
+
+      instructions.value = "";
+
+    }
+
+  });
+
+});
+
+</script>
 
 
 </body>
