@@ -27,7 +27,6 @@ html{
 body{
   width:100%;
   max-width:100%;
-
   min-height:100vh;
   min-height:100dvh;
 
@@ -192,7 +191,6 @@ body{
   min-height:calc(100vh - 85px);
   min-height:calc(100dvh - 85px);
 
-  /* bottom space for fixed button */
   padding:
     18px
     18px
@@ -306,13 +304,12 @@ body{
 
 .addressForm{
   width:100%;
-
   margin-top:38px;
 }
 
 
 /* =========================
-   FIELD
+   LINE FIELD
 ========================= */
 
 .lineField{
@@ -322,9 +319,6 @@ body{
 
   margin-bottom:27px;
 }
-
-
-/* LABEL */
 
 .lineField label{
   display:block;
@@ -337,9 +331,6 @@ body{
   font-weight:700;
 }
 
-
-/* INPUT */
-
 .lineField input{
   display:block;
 
@@ -349,9 +340,7 @@ body{
   padding:0 1px 8px;
 
   border:none;
-
   border-bottom:1.4px solid #d7d9de;
-
   border-radius:0;
 
   outline:none;
@@ -398,7 +387,45 @@ body{
 
 
 /* =========================
-   FIXED SAVE AREA
+   RECEIVED ADDRESS
+========================= */
+
+.receivedAddress{
+  width:100%;
+
+  margin-top:-2px;
+  margin-bottom:27px;
+
+  padding-bottom:12px;
+
+  border-bottom:1.4px solid #d7d9de;
+}
+
+.receivedAddressTitle{
+  display:block;
+
+  margin-bottom:8px;
+
+  color:#50535a;
+
+  font-size:13px;
+  font-weight:700;
+}
+
+.receivedAddressText{
+  margin:0;
+
+  color:#777b82;
+
+  font-size:14px;
+  font-weight:550;
+
+  line-height:1.45;
+}
+
+
+/* =========================
+   FIXED SAVE BAR
 ========================= */
 
 .saveAddressBar{
@@ -417,17 +444,13 @@ body{
     18px
     calc(12px + env(safe-area-inset-bottom));
 
-  background:
-    rgba(255,255,255,.96);
+  background:rgba(255,255,255,.96);
 
-  border-top:1px solid #eeeeF2;
+  border-top:1px solid #eeeef2;
 
   box-shadow:
     0 -8px 24px rgba(0,0,0,.06);
 }
-
-
-/* SAVE BUTTON */
 
 .saveAddressBtn{
   width:100%;
@@ -447,30 +470,11 @@ body{
   font-size:16px;
   font-weight:800;
 
-  letter-spacing:-0.2px;
-
   cursor:pointer;
 }
 
-
-/* BUTTON PRESS */
-
 .saveAddressBtn:active{
   transform:scale(.99);
-}
-
-
-/* =========================
-   DESKTOP SAVE WIDTH
-========================= */
-
-@media(min-width:700px){
-
-  .saveAddressBar{
-    padding-left:24px;
-    padding-right:24px;
-  }
-
 }
 
 
@@ -488,11 +492,9 @@ body{
     overflow-x:hidden;
   }
 
-
   .desktopHeading{
     display:none;
   }
-
 
   .mobileHeading{
     display:block;
@@ -508,17 +510,6 @@ body{
     white-space:nowrap;
   }
 
-
-  .orderingText{
-    font-weight:900;
-  }
-
-
-  .forText{
-    font-weight:600;
-  }
-
-
   .tataImage{
     top:-88px;
     right:14px;
@@ -529,23 +520,17 @@ body{
     transform:rotate(19deg);
   }
 
-
   .content{
     padding-top:18px;
     padding-left:18px;
     padding-right:18px;
-
-    /* save button cover kakunda */
     padding-bottom:125px;
   }
 
-
   .orderTypeRow{
     gap:8px;
-
     margin-top:34px;
   }
-
 
   .orderTypeBox{
     height:52px;
@@ -553,24 +538,15 @@ body{
     border-radius:12px;
 
     font-size:14px;
-    font-weight:700;
   }
-
-
-  .orderTypeBox.me{
-    font-weight:800;
-  }
-
 
   .addressForm{
     margin-top:38px;
   }
 
-
   .lineField{
     margin-bottom:25px;
   }
-
 
   .lineField label{
     margin-bottom:6px;
@@ -579,7 +555,6 @@ body{
     font-weight:700;
   }
 
-
   .lineField input{
     height:31px;
 
@@ -587,24 +562,26 @@ body{
     font-weight:600;
   }
 
-
   .twoFields{
     gap:18px;
   }
 
+  .receivedAddress{
+    margin-bottom:25px;
+  }
+
+  .receivedAddressTitle{
+    font-size:13px;
+    font-weight:700;
+  }
+
+  .receivedAddressText{
+    font-size:14px;
+  }
 
   .saveAddressBar{
     padding-left:16px;
     padding-right:16px;
-  }
-
-
-  .saveAddressBtn{
-    height:54px;
-
-    border-radius:14px;
-
-    font-size:16px;
   }
 
 }
@@ -715,7 +692,6 @@ body{
 
           <div class="twoFields">
 
-
             <div class="lineField">
 
               <label>
@@ -743,11 +719,10 @@ body{
 
             </div>
 
-
           </div>
 
 
-          <!-- BUILDING -->
+          <!-- BUILDING NAME -->
 
           <div class="lineField">
 
@@ -759,6 +734,24 @@ body{
               type="text"
               placeholder="Enter building name"
             >
+
+          </div>
+
+
+          <!-- =====================
+               RECEIVED ADDRESS
+               NO INPUT HERE
+          ====================== -->
+
+          <div class="receivedAddress">
+
+            <span class="receivedAddressTitle">
+              Received Address
+            </span>
+
+            <p class="receivedAddressText">
+              Address will appear here
+            </p>
 
           </div>
 
@@ -815,7 +808,6 @@ body{
 
           <div class="twoFields">
 
-
             <div class="lineField">
 
               <label>
@@ -845,7 +837,6 @@ body{
 
             </div>
 
-
           </div>
 
 
@@ -866,7 +857,6 @@ body{
 
 
         </div>
-
 
       </div>
 
@@ -892,9 +882,7 @@ body{
 </div>
 
 
-<!-- =========================
-     FIXED SAVE ADDRESS
-========================= -->
+<!-- FIXED SAVE ADDRESS -->
 
 <div class="saveAddressBar">
 
