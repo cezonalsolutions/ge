@@ -12,10 +12,6 @@
 
 <style>
 
-/* =========================
-   RESET
-========================= */
-
 *{
   margin:0;
   padding:0;
@@ -215,7 +211,7 @@ body{
   color:#17191c;
 
   font-size:28px;
-  font-weight:750;
+  font-weight:800;
 
   line-height:1.15;
 
@@ -224,7 +220,7 @@ body{
 
 .addressColor{
   color:#5b5bd6;
-  font-weight:850;
+  font-weight:900;
 }
 
 .desktopHeading{
@@ -247,12 +243,12 @@ body{
 
 .orderingText{
   color:#5b5bd6;
-  font-weight:850;
+  font-weight:900;
 }
 
 .forText{
   color:#24272b;
-  font-weight:500;
+  font-weight:600;
 }
 
 
@@ -286,10 +282,10 @@ body{
   border:1.5px solid #e0e1e6;
   border-radius:13px;
 
-  color:#393b42;
+  color:#34363b;
 
   font-size:15px;
-  font-weight:600;
+  font-weight:700;
 }
 
 .orderTypeBox.me{
@@ -299,7 +295,7 @@ body{
 
   color:#5b5bd6;
 
-  font-weight:750;
+  font-weight:800;
 }
 
 
@@ -309,12 +305,13 @@ body{
 
 .addressForm{
   width:100%;
-
   margin-top:38px;
 }
 
 
-/* EACH FIELD */
+/* =========================
+   FIELD
+========================= */
 
 .lineField{
   position:relative;
@@ -332,12 +329,12 @@ body{
 
   margin-bottom:7px;
 
-  color:#777b82;
+  color:#50535a;
 
-  font-size:12px;
-  font-weight:500;
+  font-size:13px;
+  font-weight:700;
 
-  letter-spacing:.1px;
+  letter-spacing:0;
 }
 
 
@@ -347,13 +344,17 @@ body{
   display:block;
 
   width:100%;
+  height:32px;
 
-  height:31px;
-
-  padding:0 1px 8px;
+  padding:
+    0
+    1px
+    8px;
 
   border:none;
-  border-bottom:1.3px solid #d9dce1;
+
+  border-bottom:
+    1.4px solid #d7d9de;
 
   border-radius:0;
 
@@ -361,12 +362,12 @@ body{
 
   background:transparent;
 
-  color:#202226;
+  color:#1e2024;
 
   font-family:inherit;
 
   font-size:16px;
-  font-weight:550;
+  font-weight:600;
 
   appearance:none;
   -webkit-appearance:none;
@@ -376,12 +377,12 @@ body{
 /* PLACEHOLDER */
 
 .lineField input::placeholder{
-  color:#b1b4ba;
-  font-weight:400;
+  color:#a9adb4;
+  font-weight:500;
 }
 
 
-/* FOCUS LINE */
+/* FOCUS */
 
 .lineField input:focus{
   border-bottom-color:#5b5bd6;
@@ -389,7 +390,7 @@ body{
 
 
 /* =========================
-   TWO FIELDS SAME ROW
+   TWO FIELDS
 ========================= */
 
 .twoFields{
@@ -417,6 +418,7 @@ body{
   .page{
     width:100%;
     max-width:100%;
+
     overflow-x:hidden;
   }
 
@@ -438,6 +440,16 @@ body{
     letter-spacing:-0.7px;
 
     white-space:nowrap;
+  }
+
+
+  .orderingText{
+    font-weight:900;
+  }
+
+
+  .forText{
+    font-weight:600;
   }
 
 
@@ -472,10 +484,14 @@ body{
     border-radius:12px;
 
     font-size:14px;
+    font-weight:700;
   }
 
 
-  /* FORM */
+  .orderTypeBox.me{
+    font-weight:800;
+  }
+
 
   .addressForm{
     margin-top:38px;
@@ -488,16 +504,18 @@ body{
 
 
   .lineField label{
-    font-size:12px;
-
     margin-bottom:6px;
+
+    font-size:13px;
+    font-weight:700;
   }
 
 
   .lineField input{
-    height:30px;
+    height:31px;
 
     font-size:16px;
+    font-weight:600;
   }
 
 
@@ -518,18 +536,14 @@ body{
   <div class="paperWrap">
 
 
-    <!-- =====================
-         WHITE PAPER
-    ====================== -->
+    <!-- WHITE PAPER -->
 
     <div class="container">
 
       <div class="content">
 
 
-        <!-- =====================
-             HEADING
-        ====================== -->
+        <!-- HEADING -->
 
         <div class="addressHeading">
 
@@ -540,9 +554,11 @@ body{
 
             <span class="desktopLine">
               Help us know your
+
               <span class="addressColor">
                 Address
               </span>
+
             </span>
 
             <span class="desktopLine">
@@ -570,9 +586,7 @@ body{
         </div>
 
 
-        <!-- =====================
-             FRIEND / PARENTS / ME
-        ====================== -->
+        <!-- FRIEND / PARENTS / ME -->
 
         <div class="orderTypeRow">
 
@@ -591,16 +605,32 @@ body{
         </div>
 
 
-        <!-- =====================
-             ADDRESS DETAILS
-        ====================== -->
+        <!-- ADDRESS FORM -->
 
         <div class="addressForm">
+
+
+          <!-- FULL NAME -->
+
+          <div class="lineField">
+
+            <label>
+              Full Name
+            </label>
+
+            <input
+              type="text"
+              placeholder="Enter full name"
+              autocomplete="name"
+            >
+
+          </div>
 
 
           <!-- DOOR + ROOM -->
 
           <div class="twoFields">
+
 
             <div class="lineField">
 
@@ -629,10 +659,11 @@ body{
 
             </div>
 
+
           </div>
 
 
-          <!-- BUILDING -->
+          <!-- BUILDING NAME -->
 
           <div class="lineField">
 
@@ -648,7 +679,7 @@ body{
           </div>
 
 
-          <!-- APARTMENT -->
+          <!-- APARTMENT NAME -->
 
           <div class="lineField">
 
@@ -664,7 +695,7 @@ body{
           </div>
 
 
-          <!-- ROAD -->
+          <!-- ROAD / STREET -->
 
           <div class="lineField">
 
@@ -680,7 +711,7 @@ body{
           </div>
 
 
-          <!-- VILLAGE -->
+          <!-- VILLAGE / AREA -->
 
           <div class="lineField">
 
@@ -696,9 +727,10 @@ body{
           </div>
 
 
-          <!-- CITY + PIN -->
+          <!-- TOWN + PIN -->
 
           <div class="twoFields">
+
 
             <div class="lineField">
 
@@ -723,10 +755,12 @@ body{
               <input
                 type="text"
                 inputmode="numeric"
+                maxlength="6"
                 placeholder="PIN code"
               >
 
             </div>
+
 
           </div>
 
@@ -755,16 +789,12 @@ body{
     </div>
 
 
-    <!-- =====================
-         BLUE FOLD
-    ====================== -->
+    <!-- BLUE FOLD -->
 
     <div class="paperFold"></div>
 
 
-    <!-- =====================
-         TATA IMAGE
-    ====================== -->
+    <!-- TATA IMAGE -->
 
     <img
       src="tata.png"
